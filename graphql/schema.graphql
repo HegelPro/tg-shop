@@ -4,7 +4,12 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 type Mutation {
-  invoiceUrl(productList: [ProductInput!]!): String!
+  invoiceUrl(orderItemList: [OrderItem!]!): String!
+}
+
+input OrderItem {
+  counter: Int!
+  productId: Int!
 }
 
 type Product {
@@ -19,11 +24,6 @@ type Product {
 }
 
 type ProductCategory {
-  id: Int!
-}
-
-input ProductInput {
-  counter: Int!
   id: Int!
 }
 

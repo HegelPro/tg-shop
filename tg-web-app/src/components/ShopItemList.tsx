@@ -5,23 +5,23 @@ import type { CounterData } from "../App";
 import { useEffect } from "react";
 
 interface ShopItemListProps {
-  items: CounterData<ProductListQuery['productList'][0]>[]
+  productWithCounterList: CounterData<ProductListQuery['productList'][0]>[]
   next: () => void
   increament: (id: number) => void
   decreament: (id: number) => void
 }
-export const ShopItemList = ({items, increament, decreament, next}: ShopItemListProps) => {
+export const ShopItemList = ({productWithCounterList, increament, decreament, next}: ShopItemListProps) => {
     useEffect(() => {
       (window as any).Telegram.WebApp.MainButton.setText('View order')
     }, [])
 
     useEffect(() => {
-      if(items.some((item) => item.counter > 0)) {
+      if(productWithCounterList.some(({counter}) => counter > 0)) {
         (window as any).Telegram.WebApp.MainButton.show()
       } else {
         (window as any).Telegram.WebApp.MainButton.hide()
       }
-    }, [items])
+    }, [productWithCounterList])
 
     useEffect(() => {
       (window as any).Telegram.WebApp.MainButton.onClick(next)
@@ -30,7 +30,7 @@ export const ShopItemList = ({items, increament, decreament, next}: ShopItemList
 
     return (
         <div className="itemList">
-          {items.map(({data, counter}) => <ShopItem
+          {productWithCounterList.map(({data, counter}) => <ShopItem
             key={data.id}
             image={data.image}
             name={data.name}

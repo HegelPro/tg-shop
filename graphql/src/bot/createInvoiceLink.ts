@@ -1,10 +1,12 @@
+import { Product } from "@prisma/client";
 import { Bot } from "grammy";
 
-export const createInvoiceLink = async (bot: Bot, receive: {
-    id: number,
-    counter: number,
-    price: number
-}[]) => {
+interface Counter<T> {
+    data: T
+    counter: number
+}
+
+export const createInvoiceLink = async (bot: Bot, receive: Counter<Product>[]) => {
     const invoiceLink = await bot.api.createInvoiceLink(
         'PRODUCTS',
         'something',
@@ -12,8 +14,8 @@ export const createInvoiceLink = async (bot: Bot, receive: {
         process.env.PROVIDER_TOKEN || "",
         'RUB',
         receive.map(item => ({
-            label: item.id.toString(),
-            amount: item.counter * item.price * 100
+            label: `${item.data.name} x ${item.counter}`,
+            amount: item.counter * item.data.price * 100
         }))
     );
 

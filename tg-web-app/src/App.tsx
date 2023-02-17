@@ -29,28 +29,28 @@ function App() {
 
   const [page, setPage] = useState(0)
 
-  const [items, setItems] = useState<(CounterData<ProductListQuery['productList'][0]>)[]>([]);
+  const [productWithCounterList, setProductWithCounterList] = useState<(CounterData<ProductListQuery['productList'][0]>)[]>([]);
 
   const next = useCallback(() => setPage(page + 1), [page, setPage]);
   const back = useCallback(() => setPage(page - 1), [page, setPage]);
 
   const increament = useCallback((id: number) => {
-    setItems(
-      items.map(item => item.data.id === id
-        ? {data: item.data, counter: item.counter + 1}
-        : item
+    setProductWithCounterList(
+      productWithCounterList.map(productWithCounter => productWithCounter.data.id === id
+        ? {data: productWithCounter.data, counter: productWithCounter.counter + 1}
+        : productWithCounter
       )
     );
-  }, [items, setItems]);
+  }, [productWithCounterList, setProductWithCounterList]);
 
   const decreament = useCallback((id: number) => {
-    setItems(
-      items.map(item => item.data.id === id
-        ? {data: item.data, counter: item.counter - 1}
-        : item
+    setProductWithCounterList(
+      productWithCounterList.map(productWithCounter => productWithCounter.data.id === id
+        ? {data: productWithCounter.data, counter: productWithCounter.counter - 1}
+        : productWithCounter
       )
     );
-  }, [items, setItems]);
+  }, [productWithCounterList, setProductWithCounterList]);
 
   useEffect(() => {
       request(
@@ -58,7 +58,7 @@ function App() {
           getUserQuery
       )
           .then(data => {
-            setItems(data.productList.map(data => ({
+            setProductWithCounterList(data.productList.map(data => ({
               data: {...data},
               counter: 0,
             })))
@@ -89,12 +89,12 @@ function App() {
       {page === 0 && (
         <ShopItemList
           next={next}
-          items={items}
+          productWithCounterList={productWithCounterList}
           increament={increament}
           decreament={decreament}
         />
       )}
-      {page === 1 && <OrderItemList items={items} />}
+      {page === 1 && <OrderItemList productWithCounterList={productWithCounterList} />}
     </div>
   )
 }

@@ -6,26 +6,26 @@ import { ProductListQuery } from "../gql/graphql";
 import { OrderItem } from "./OrderItem";
 
 const getinvoiceUrlQuery = graphql(/* GraphQL */ `
-  mutation NewQuery($productList: [ProductInput!]!) {
-    invoiceUrl(productList: $productList) 
+  mutation NewQuery($orderItemList: [OrderItem!]!) {
+    invoiceUrl(orderItemList: $orderItemList) 
   }
 `);
 
 interface OrderItemListProps {
-  items: CounterData<ProductListQuery['productList'][0]>[]
+  productWithCounterList: CounterData<ProductListQuery['productList'][0]>[]
 }
 
-export const OrderItemList = ({items}: OrderItemListProps) => {
+export const OrderItemList = ({productWithCounterList}: OrderItemListProps) => {
     const onPayHandler = useCallback(() => {
         request(
             import.meta.env.VITE_GRAPHQL_ENDPOINT,
             getinvoiceUrlQuery,
             {
-              productList: items
-                .filter(item => item.counter > 0)
-                .map(item => ({
-                  counter: item.counter,
-                  id: item.data.id
+              orderItemList: productWithCounterList
+                .filter(productWithCounter => productWithCounter.counter > 0)
+                .map(productWithCounter => ({
+                  counter: productWithCounter.counter,
+                  productId: productWithCounter.data.id
                 }))
             }
         )
@@ -33,9 +33,9 @@ export const OrderItemList = ({items}: OrderItemListProps) => {
               (window as any).Telegram.WebApp.openInvoice(data.invoiceUrl)
             })
             .catch(console.error);
-    }, [items])
+    }, [productWithCounterList])
 
-    const sum = useMemo(() => items.reduce((sum, item) => sum + item.data.price * item.counter, 0), [items])
+    const sum = useMemo(() => productWithCounterList.reduce((sum, {data, counter}) => sum + data.price * counter, 0), [productWithCounterList])
 
     useEffect(() => {
       (window as any).Telegram.WebApp.MainButton.setText(`Invoice: ${sum}`);
@@ -49,16 +49,16 @@ export const OrderItemList = ({items}: OrderItemListProps) => {
     return (
         <div>
             <div>
-                {items
-                    .filter(item => item.counter > 0)
-                    .map(item => (
+                {productWithCounterList
+                    .filter(productWithCounter => productWithCounter.counter > 0)
+                    .map(({data, counter}) => (
                       <OrderItem
-                        image={item.data.image}
-                        key={item.data.id}
-                        name={item.data.name}
-                        description={item.data.descrition}
-                        price={item.data.price}
-                        counter={item.counter}
+                        image={data.image}
+                        key={data.id}
+                        name={data.name}
+                        description={data.descrition}
+                        price={data.price}
+                        counter={counter}
                       />
                     ))
                 }

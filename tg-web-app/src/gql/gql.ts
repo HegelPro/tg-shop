@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  query ProductList {\n    productList {\n      name\n      descrition\n      id\n      image\n      price\n      currency\n      numberOfproduct\n    }\n  }\n": types.ProductListDocument,
-    "\n  mutation NewQuery($productList: [ProductInput!]!) {\n    invoiceUrl(productList: $productList) \n  }\n": types.NewQueryDocument,
+    "\n  mutation NewQuery($orderItemList: [OrderItem!]!) {\n    invoiceUrl(orderItemList: $orderItemList) \n  }\n": types.NewQueryDocument,
 };
 
 /**
@@ -38,7 +38,7 @@ export function graphql(source: "\n  query ProductList {\n    productList {\n   
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation NewQuery($productList: [ProductInput!]!) {\n    invoiceUrl(productList: $productList) \n  }\n"): (typeof documents)["\n  mutation NewQuery($productList: [ProductInput!]!) {\n    invoiceUrl(productList: $productList) \n  }\n"];
+export function graphql(source: "\n  mutation NewQuery($orderItemList: [OrderItem!]!) {\n    invoiceUrl(orderItemList: $orderItemList) \n  }\n"): (typeof documents)["\n  mutation NewQuery($orderItemList: [OrderItem!]!) {\n    invoiceUrl(orderItemList: $orderItemList) \n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

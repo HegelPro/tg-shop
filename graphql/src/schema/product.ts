@@ -23,11 +23,11 @@ builder.prismaObject('ProductCategory', {
     })
 })
 
-const ProductInput = builder.inputType(
-    'ProductInput',
+const OrderItemInput = builder.inputType(
+    'OrderItem',
     {
       fields: (t) => ({
-        id: t.int({required: true}),
+        productId: t.int({required: true}),
         counter: t.int({required: true})
       }),
     },
@@ -43,15 +43,25 @@ builder.queryField('productList', t => t.prismaField({
 builder.mutationField('invoiceUrl', t => t.field({
         type: 'String',
         args: {
-            productList: t.arg({
-                type: t.arg.listRef(ProductInput),
+            orderItemList: t.arg({
+                type: t.arg.listRef(OrderItemInput),
                 required: true
             }),
         },
-        resolve: (parent, args) => createInvoiceLink(bot, args.productList.map(product => ({
-            id: product.id,
-            counter: product.counter,
-            price: 10,
-        }))),
+        resolve: async (parent, args) => {
+            const productList = await prisma.product.findMany({
+                where: {
+                    id: {in: args.orderItemList.map(orderItem => orderItem.productId)}
+                },
+            })
+            return createInvoiceLink(
+                bot,
+                productList
+                    .map(product => ({
+                        counter: args.orderItemList.find(orderItem => product.id === orderItem.productId)?.counter || -99999,
+                        data: product
+                    }))
+            )
+        }
     })
 );
