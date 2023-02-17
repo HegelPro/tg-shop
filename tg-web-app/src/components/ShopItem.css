@@ -1,0 +1,32 @@
+.shopItem {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.shopItem__image {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.shopItem__title {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.shopItem__description {
+    margin: 0;
+    color: var(--tg-theme-hint-color);
+    font-size: 1rem;
+}
+
+.shopItem__actionBtns {
+    display: flex;
+}
+
+.shopItem__btn {
+}
+
+.shopItem__space {
+    width: 0.5rem;
+}

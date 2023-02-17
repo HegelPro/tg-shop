@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator pothos {
+  provider = "prisma-pothos-types"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+  posts Post[]
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  viewCount Int      @default(0)
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+}
+
+model Product {
+  id                Int             @id @default(autoincrement())
+  name              String
+  descrition        String?
+  price             Float
+  currency          String          @default("RUB")
+  numberOfproduct   Int
+  image             String
+  productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
+  productCategoryId Int
+}
+
+model ProductCategory {
+  id      Int      @id @unique @default(autoincrement())
+  product Product[]
+}

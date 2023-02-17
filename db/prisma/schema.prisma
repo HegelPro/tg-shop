@@ -37,21 +37,22 @@ model User {
 }
 
 model Item {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
   description String?
+  price       Int
   images      Bytes[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  basket    Basket   @relation(fields: [basketId], references: [id])
-  basketId  Int
-  itemGroup ItemGroup @relation(fields: [itemGroupId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  basket      Basket    @relation(fields: [basketId], references: [id])
+  basketId    Int
+  itemGroup   ItemGroup @relation(fields: [itemGroupId], references: [id])
   itemGroupId Int
 }
 
 model ItemGroup {
-  id        Int      @id @default(autoincrement())
-  name String @unique
+  id    Int    @id @default(autoincrement())
+  name  String @unique
   items Item[]
 }
 
@@ -60,13 +61,13 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   address   String
-  tgUri String
+  tgUri     String
   basket    Basket   @relation(fields: [basketId], references: [id])
-  basketId  Int @unique
+  basketId  Int      @unique
 }
 
 model Basket {
-  id Int @id @default(autoincrement())
+  id     Int    @id @default(autoincrement())
   orders Order?
-  items Item[]
+  items  Item[]
 }
