@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 export const useTelegram = () => {
     return {
+        isTelegram: typeof Telegram.WebApp?.initDataUnsafe?.query_id !== 'undefined',
         BackButton: (Telegram.WebApp as any).BackButton,
         MainButton: Telegram.WebApp.MainButton,
         openInvoice: (Telegram.WebApp as any).openInvoice

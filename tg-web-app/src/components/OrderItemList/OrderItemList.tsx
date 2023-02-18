@@ -4,6 +4,7 @@ import type { ProductQueryType } from "../../App";
 import { graphql } from "../../gql";
 import { useTelegram } from "../../hooks/useTelegram";
 import { WithCounter } from "../../util/types";
+import { NoTelegram } from "../NoTelegram/NoTelegram";
 import { OrderItem } from "./OrderItem";
 
 const getinvoiceUrlQuery = graphql(/* GraphQL */ `
@@ -57,8 +58,9 @@ export const OrderItemList = ({productWithCounterList}: OrderItemListProps) => {
                     ))
                 }
             </div>
-            
-            <button onClick={onPayHandler}>Pay</button>
+            <NoTelegram>
+              <button onClick={onPayHandler}>Pay</button>
+            </NoTelegram>
         </div>
     );
 }

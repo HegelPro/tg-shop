@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ProductListQuery } from "./gql/graphql";
 import { WithCounter } from './util/types';
 import { useInitTelegram } from './hooks/useTelegram';
+import { Layout } from './components/Layout/Layout';
 
 const getProductListQuery = graphql(/* GraphQL */ `
   query ProductList {
@@ -59,17 +60,22 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={back}>back</button>
-      <button onClick={next}>next</button>
-      {page === 0 && (
-        <ShopItemList
-          next={next}
-          productWithCounterList={productWithCounterList}
-          increament={increamentCounterByProductId}
-          decreament={decreamentCounterByProductId}
-        />
-      )}
-      {page === 1 && <OrderItemList productWithCounterList={productWithCounterList} />}
+      <Layout toolpanel={(
+        <>
+          <button onClick={back}>back</button>
+          <button onClick={next}>next</button>
+        </>
+      )}>
+        {page === 0 && (
+          <ShopItemList
+            next={next}
+            productWithCounterList={productWithCounterList}
+            increament={increamentCounterByProductId}
+            decreament={decreamentCounterByProductId}
+          />
+        )}
+        {page === 1 && <OrderItemList productWithCounterList={productWithCounterList} />}
+      </Layout>      
     </div>
   )
 }

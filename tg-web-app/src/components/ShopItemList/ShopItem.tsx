@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Modal from 'react-modal';
 import type { ProductQueryType } from '../../App';
 import { WithCounter } from '../../util/types';
+import { ModalShopItem } from './ModalShopItem';
 import './ShopItem.css'
 
 interface ShopItemProps {
@@ -15,12 +16,16 @@ export const ShopItem = ({
     decreament
 }: ShopItemProps) => {
     const [modalIsOpen, setIsOpen] = useState(false);
+    const openModalHandler = useCallback(() => setIsOpen(true), [])
+    const closeModalHandler = useCallback(() => setIsOpen(false), [])
 
     return (
         <>
             <div className='shopItem'>
-                <div onClick={() => setIsOpen(true)}>
-                    <img className='shopItem__image' src={productWithCounter.data.image} />
+                <div className='shopItem__info' onClick={openModalHandler}>
+                    <div className='shopItem__imageContainer'>
+                        <img className='pure-img shopItem__image' src={productWithCounter.data.image} />
+                    </div>
                     <h2 className='shopItem__title'>{productWithCounter.data.name}</h2>
                     <p>{productWithCounter.data.price} rub</p>
                 </div>
@@ -41,31 +46,16 @@ export const ShopItem = ({
                     >+</button>
                 </div>
             </div>
+
             <Modal
                 isOpen={modalIsOpen}
-                onRequestClose={() => setIsOpen(false)}
+                onRequestClose={closeModalHandler}
                 contentLabel="Example Modal"
             >
-                <img className='shopItem__image' src={productWithCounter.data.image} />
-                <h2 className='shopItem__title'>{productWithCounter.data.name}</h2>
-                <p className='shopItem__description'>{productWithCounter.data.descrition}</p>
-                <p>{productWithCounter.data.price} rub</p>
-
-                <div className='shopItem__actionBtns'>
-                    <button
-                        className='pure-button pure-button-primary'
-                        disabled={productWithCounter.counter <= 0}
-                        onClick={decreament}
-                    >-</button>
-                    <span className='shopItem__space' />
-                    <span>{productWithCounter.counter}</span>
-                    <span className='shopItem__space' />
-                    <button
-                        className='pure-button pure-button-primary'
-                        disabled={productWithCounter.counter >= 10}
-                        onClick={increament}
-                    >+</button>
-                </div>
+                <ModalShopItem
+                    onClose={closeModalHandler}
+                    productWithCounter={productWithCounter}
+                />
             </Modal>
         </>
 
