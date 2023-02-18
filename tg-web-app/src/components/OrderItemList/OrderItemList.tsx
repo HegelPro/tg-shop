@@ -1,8 +1,9 @@
 import request from "graphql-request";
 import { useCallback, useEffect, useMemo } from "react";
-import type { CounterData } from "../App";
-import { graphql } from "../gql";
-import { ProductListQuery } from "../gql/graphql";
+import type { ProductQueryType } from "../../App";
+import { graphql } from "../../gql";
+import { useTelegram } from "../../hooks/useTelegram";
+import { WithCounter } from "../../util/types";
 import { OrderItem } from "./OrderItem";
 
 const getinvoiceUrlQuery = graphql(/* GraphQL */ `
@@ -12,10 +13,12 @@ const getinvoiceUrlQuery = graphql(/* GraphQL */ `
 `);
 
 interface OrderItemListProps {
-  productWithCounterList: CounterData<ProductListQuery['productList'][0]>[]
+  productWithCounterList: WithCounter<ProductQueryType>[]
 }
 
 export const OrderItemList = ({productWithCounterList}: OrderItemListProps) => {
+  const {MainButton, openInvoice} = useTelegram();
+
     const onPayHandler = useCallback(() => {
         request(
             import.meta.env.VITE_GRAPHQL_ENDPOINT,
@@ -29,40 +32,32 @@ export const OrderItemList = ({productWithCounterList}: OrderItemListProps) => {
                 }))
             }
         )
-            .then(data => {
-              (window as any).Telegram.WebApp.openInvoice(data.invoiceUrl)
-            })
+            .then(data => openInvoice(data.invoiceUrl))
             .catch(console.error);
-    }, [productWithCounterList])
+    }, [openInvoice, productWithCounterList])
 
     const sum = useMemo(() => productWithCounterList.reduce((sum, {data, counter}) => sum + data.price * counter, 0), [productWithCounterList])
 
     useEffect(() => {
-      (window as any).Telegram.WebApp.MainButton.setText(`Invoice: ${sum}`);
-    }, [sum])
+      MainButton.setText(`Pay: ${sum} rub`);
+    }, [MainButton, sum])
 
     useEffect(() => {
-      (window as any).Telegram.WebApp.MainButton.onClick(onPayHandler)
-      return () => {(window as any).Telegram.WebApp.MainButton.offClick(onPayHandler)}
-    }, [onPayHandler])
+      MainButton.onClick(onPayHandler)
+      return () => {MainButton.offClick(onPayHandler)}
+    }, [MainButton, onPayHandler])
 
     return (
         <div>
             <div>
                 {productWithCounterList
                     .filter(productWithCounter => productWithCounter.counter > 0)
-                    .map(({data, counter}) => (
-                      <OrderItem
-                        image={data.image}
-                        key={data.id}
-                        name={data.name}
-                        description={data.descrition}
-                        price={data.price}
-                        counter={counter}
-                      />
+                    .map((productWithCounter) => (
+                      <OrderItem key={productWithCounter.data.id} productWithCounter={productWithCounter}/>
                     ))
                 }
             </div>
+            
             <button onClick={onPayHandler}>Pay</button>
         </div>
     );

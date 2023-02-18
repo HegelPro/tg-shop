@@ -1,11 +1,13 @@
-import { ShopItemList } from './components/ShopItemList'
-import { OrderItemList } from './components/OrderItemList'
+import { ShopItemList } from './components/ShopItemList/ShopItemList'
+import { OrderItemList } from './components/OrderItemList/OrderItemList'
 import {request} from 'graphql-request'
 import {graphql} from './gql/gql';
 import { useCallback, useEffect, useState } from "react";
 import { ProductListQuery } from "./gql/graphql";
+import { WithCounter } from './util/types';
+import { useInitTelegram, useTelegram } from './hooks/useTelegram';
 
-const getUserQuery = graphql(/* GraphQL */ `
+const getProductListQuery = graphql(/* GraphQL */ `
   query ProductList {
     productList {
       name
@@ -19,47 +21,36 @@ const getUserQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export interface CounterData<T> {
-  data: T;
-  counter: number;
-}
+export type ProductQueryType = ProductListQuery['productList'][0]
 
 function App() {
-  useEffect(() => (window as any).Telegram.WebApp.ready(), [])
+  useInitTelegram();
+  const {BackButton} = useTelegram()
 
   const [page, setPage] = useState(0)
-
-  const [productWithCounterList, setProductWithCounterList] = useState<(CounterData<ProductListQuery['productList'][0]>)[]>([]);
-
   const next = useCallback(() => setPage(page + 1), [page, setPage]);
   const back = useCallback(() => setPage(page - 1), [page, setPage]);
 
-  const increament = useCallback((id: number) => {
+  const [productWithCounterList, setProductWithCounterList] = useState<(WithCounter<ProductQueryType>)[]>([]);
+  const changeCounterByProductId = useCallback((id: number, value: number) => {
     setProductWithCounterList(
       productWithCounterList.map(productWithCounter => productWithCounter.data.id === id
-        ? {data: productWithCounter.data, counter: productWithCounter.counter + 1}
+        ? {data: productWithCounter.data, counter: productWithCounter.counter + value}
         : productWithCounter
       )
     );
-  }, [productWithCounterList, setProductWithCounterList]);
-
-  const decreament = useCallback((id: number) => {
-    setProductWithCounterList(
-      productWithCounterList.map(productWithCounter => productWithCounter.data.id === id
-        ? {data: productWithCounter.data, counter: productWithCounter.counter - 1}
-        : productWithCounter
-      )
-    );
-  }, [productWithCounterList, setProductWithCounterList]);
+  }, [productWithCounterList])
+  const increamentCounterByProductId = useCallback((id: number) => changeCounterByProductId(id, 1), [changeCounterByProductId]);
+  const decreamentCounterByProductId = useCallback((id: number) => changeCounterByProductId(id, -1), [changeCounterByProductId]);
 
   useEffect(() => {
       request(
           import.meta.env.VITE_GRAPHQL_ENDPOINT,
-          getUserQuery
+          getProductListQuery
       )
           .then(data => {
             setProductWithCounterList(data.productList.map(data => ({
-              data: {...data},
+              data,
               counter: 0,
             })))
           })
@@ -69,18 +60,18 @@ function App() {
 
   useEffect(() => {
     if(page > 0) {
-      (window as any).Telegram.WebApp.BackButton.show()
+      BackButton.show()
     } else {
-      (window as any).Telegram.WebApp.BackButton.hide()
+      BackButton.hide()
     }
-  }, [page])
+  }, [BackButton, page])
 
   useEffect(() => {
-    (window as any).Telegram.WebApp.BackButton.onClick(back)
+    BackButton.onClick(back)
     return () => {
-      (window as any).Telegram.WebApp.BackButton.offClick(back)
+      BackButton.offClick(back)
     }
-  }, [back])
+  }, [BackButton, back])
 
   return (
     <div className="App">
@@ -90,8 +81,8 @@ function App() {
         <ShopItemList
           next={next}
           productWithCounterList={productWithCounterList}
-          increament={increament}
-          decreament={decreament}
+          increament={increamentCounterByProductId}
+          decreament={decreamentCounterByProductId}
         />
       )}
       {page === 1 && <OrderItemList productWithCounterList={productWithCounterList} />}
