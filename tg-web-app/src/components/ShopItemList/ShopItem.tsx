@@ -27,7 +27,7 @@ export const ShopItem = ({
                         <img className='pure-img shopItem__image' src={productWithCounter.data.image} />
                     </div>
                     <h2 className='shopItem__title'>{productWithCounter.data.name}</h2>
-                    <p>{productWithCounter.data.price} rub</p>
+                    <p>{productWithCounter.data.price} {productWithCounter.data.currency}</p>
                 </div>
 
                 <div className='shopItem__actionBtns'>
