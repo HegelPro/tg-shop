@@ -14,48 +14,36 @@ export const addCommands = (bot: Bot) => {
         { command: "settings", description: "Open settings" },
     ]);
 
-    bot.command('help', (ctx) => {
-        ctx.reply('null', {
-            reply_markup: keyboard,
-        });
-    });
+    // bot.command('help', (ctx) => {
+    //     ctx.reply('null', {
+    //         reply_markup: keyboard,
+    //     });
+    // });
     
     
     bot.command('start', async (ctx) => {
-    if (ctx.msg?.web_app_data?.data) {
-        try {
-        const data = JSON.parse(ctx.msg?.web_app_data?.data)
-        console.log(data)
-        ctx.reply('Спасибо за обратную связь!')
-        ctx.reply('Ваша страна: ' + data?.country);
-        ctx.reply('Ваша улица: ' + data?.street);
-    
-        setTimeout(async () => {
-            await ctx.reply('Всю информацию вы получите в этом чате');
-        }, 3000)
-        } catch (e) {
-            console.log(e);
-        }
-    } else {
-        ctx.reply('d', {
-            reply_markup: keyboard,
-        })
-    }
+        ctx.reply('Welcame to our store')
     });
     
-    bot.command('pay', (ctx) => {
-        ctx.replyWithInvoice(
-            'kek',
-            'dddd',
-            '9039039',
-            process.env.PROVIDER_TOKEN || "",
-            'RUB',
-            [{ label: 'Invoice Title', amount: 100 * 100 }]
-        )
-    })
-    
     bot.on(':successful_payment', (ctx, next) => {
-        console.log(ctx);
+        console.log(':successful_payment');
+        
+        console.log(ctx.message?.successful_payment);
+        next();
+    })
+
+    bot.on('msg:successful_payment', (ctx, next) => {
+        console.log('msg:successful_payment');
+        
+        console.log(ctx.message?.successful_payment);
+        next();
+    })
+
+    bot.on('message:successful_payment', (ctx, next) => {
+        console.log('message:successful_payment');
+        
+        console.log(ctx.message?.successful_payment);
+        next();
     })
     
     // Reply to any message with "Hi there!".

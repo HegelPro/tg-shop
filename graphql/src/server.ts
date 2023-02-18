@@ -6,7 +6,7 @@ import { addCommands } from './bot/addCommands'
 import { readFileSync } from 'fs'
 
 addCommands(bot)
-bot.start();
+bot.start({onStart: () => console.log('bot is started')});
 
 const yoga = createYoga({
   graphqlEndpoint: '/',
@@ -24,10 +24,11 @@ const cert = readFileSync(process.env?.CERTIFICATE_CERT_PATH || '', 'utf8');
 const ca = readFileSync(process.env?.CERTIFICATE_CHAIN_PATH || '', 'utf8');
 
 const server = createServer({key, cert, ca}, yoga)
+const serverPort = process.env?.SERVER_PORT || 4000
 
-server.listen(process.env?.SERVER_PORT || 4000, () => {
+server.listen(serverPort, () => {
   console.log(`\
-🚀 Server ready at: http://127.0.0.1:${process.env?.SERVER_PORT || 4000}
+🚀 Server ready at: http://127.0.0.1:${serverPort}
 ⭐️ See sample queries: http://pris.ly/e/ts/graphql#using-the-graphql-api
   `)
 })

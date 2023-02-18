@@ -5,7 +5,7 @@ import {graphql} from './gql/gql';
 import { useCallback, useEffect, useState } from "react";
 import { ProductListQuery } from "./gql/graphql";
 import { WithCounter } from './util/types';
-import { useInitTelegram, useTelegram } from './hooks/useTelegram';
+import { useInitTelegram } from './hooks/useTelegram';
 
 const getProductListQuery = graphql(/* GraphQL */ `
   query ProductList {
@@ -24,12 +24,11 @@ const getProductListQuery = graphql(/* GraphQL */ `
 export type ProductQueryType = ProductListQuery['productList'][0]
 
 function App() {
-  useInitTelegram();
-  const {BackButton} = useTelegram()
-
   const [page, setPage] = useState(0)
   const next = useCallback(() => setPage(page + 1), [page, setPage]);
   const back = useCallback(() => setPage(page - 1), [page, setPage]);
+
+  useInitTelegram({page, back});
 
   const [productWithCounterList, setProductWithCounterList] = useState<(WithCounter<ProductQueryType>)[]>([]);
   const changeCounterByProductId = useCallback((id: number, value: number) => {
@@ -57,21 +56,6 @@ function App() {
           .catch(console.error);
   }, []);
 
-
-  useEffect(() => {
-    if(page > 0) {
-      BackButton.show()
-    } else {
-      BackButton.hide()
-    }
-  }, [BackButton, page])
-
-  useEffect(() => {
-    BackButton.onClick(back)
-    return () => {
-      BackButton.offClick(back)
-    }
-  }, [BackButton, back])
 
   return (
     <div className="App">
