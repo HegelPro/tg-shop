@@ -1,6 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import type { ProductQueryType } from '../../App';
+import { showPopup } from '../../util/tg';
 import { WithCounter } from '../../util/types';
 import { ModalShopItem } from './ModalShopItem';
 import './ShopItem.css'
@@ -19,12 +20,19 @@ export const ShopItem = ({
     const openModalHandler = useCallback(() => setIsOpen(true), [])
     const closeModalHandler = useCallback(() => setIsOpen(false), [])
 
+    useEffect(() => {
+        if (productWithCounter.counter === productWithCounter.data.numberOfproduct) {
+            showPopup({message: `You choose maximum amount of ${productWithCounter.data.name} products`})
+        }
+    }, [productWithCounter])
+
     return (
         <>
             <div className='shopItem'>
                 <div className='shopItem__info' onClick={openModalHandler}>
                     <div className='shopItem__imageContainer'>
                         <img className='pure-img shopItem__image' src={productWithCounter.data.image} />
+                        {productWithCounter.counter > 0 && <div className='shopItem__counter'>{productWithCounter.counter}</div>}
                     </div>
                     <h2 className='shopItem__title'>{productWithCounter.data.name}</h2>
                     <p>{productWithCounter.data.price} {productWithCounter.data.currency}</p>
@@ -32,16 +40,13 @@ export const ShopItem = ({
 
                 <div className='shopItem__actionBtns'>
                     <button
-                        className='pure-button pure-button-primary'
+                        className='pure-button pure-button-primary shopItem__btn'
                         disabled={productWithCounter.counter <= 0}
                         onClick={decreament}
                     >-</button>
-                    <span className='shopItem__space' />
-                    <span>{productWithCounter.counter}</span>
-                    <span className='shopItem__space' />
                     <button
-                        className='pure-button pure-button-primary'
-                        disabled={productWithCounter.counter >= 100}
+                        className='pure-button pure-button-primary shopItem__btn ml'
+                        disabled={productWithCounter.counter >= productWithCounter.data.numberOfproduct}
                         onClick={increament}
                     >+</button>
                 </div>

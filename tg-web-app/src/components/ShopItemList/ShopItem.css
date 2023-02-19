@@ -15,6 +15,23 @@
 
 }
 
+.shopItem__counter {
+    position: absolute;
+    top: -1em;
+    right: -1em;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 2em;
+    min-height: 2em;
+    border: 3px solid #f4fdff;
+    border-radius: 2em;
+    color: var(--tg-theme-button-text-color);
+    background-color: var(--tg-theme-button-color);
+    text-align: center;
+    transition: transform 0.15s, background-color 0.5s;
+  }
+
 .shopItem__image {
     width: 100%;
     position: absolute;

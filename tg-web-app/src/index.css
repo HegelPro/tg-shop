@@ -18,6 +18,10 @@ Copyright (c) Nicolas Gallagher and Jonathan Neal
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
+.ml {
+    margin-left: 0.5em;
+}
+
 html {
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
