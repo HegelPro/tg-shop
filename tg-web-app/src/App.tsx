@@ -1,23 +1,24 @@
 import { ShopItemList } from './components/ShopItemList/ShopItemList'
 import { OrderItemList } from './components/OrderItemList/OrderItemList'
-import {request} from 'graphql-request'
-import {graphql} from './gql/gql';
+import { request } from 'graphql-request'
+import { graphql } from './gql/gql';
 import { useCallback, useEffect, useState } from "react";
 import { ProductListQuery } from "./gql/graphql";
 import { WithCounter } from './util/types';
-import { useInitTelegram } from './hooks/useTelegram';
+import { useInitTelegram } from './hooks/useInitTelegram';
 import { Layout } from './components/Layout/Layout';
+import { showPopup } from './util/tg';
 
 const getProductListQuery = graphql(/* GraphQL */ `
   query ProductList {
     productList {
-      name
-      descrition
-      id
-      image
-      price
-      currency
-      numberOfproduct
+        name
+        descrition
+        id
+        image
+        price
+        currency
+        numberOfproduct
     }
   }
 `);
@@ -29,13 +30,13 @@ function App() {
   const next = useCallback(() => setPage(page + 1), [page, setPage]);
   const back = useCallback(() => setPage(page - 1), [page, setPage]);
 
-  useInitTelegram({page, back});
+  useInitTelegram({ page, back });
 
   const [productWithCounterList, setProductWithCounterList] = useState<(WithCounter<ProductQueryType>)[]>([]);
   const changeCounterByProductId = useCallback((id: number, value: number) => {
     setProductWithCounterList(
       productWithCounterList.map(productWithCounter => productWithCounter.data.id === id
-        ? {data: productWithCounter.data, counter: productWithCounter.counter + value}
+        ? { data: productWithCounter.data, counter: productWithCounter.counter + value }
         : productWithCounter
       )
     );
@@ -44,17 +45,20 @@ function App() {
   const decreamentCounterByProductId = useCallback((id: number) => changeCounterByProductId(id, -1), [changeCounterByProductId]);
 
   useEffect(() => {
-      request(
-          import.meta.env.VITE_GRAPHQL_ENDPOINT,
-          getProductListQuery
-      )
-          .then(data => {
-            setProductWithCounterList(data.productList.map(data => ({
-              data,
-              counter: 0,
-            })))
-          })
-          .catch(console.error);
+    request(
+      import.meta.env.VITE_GRAPHQL_ENDPOINT,
+      getProductListQuery
+    )
+      .then(data => {
+        setProductWithCounterList(data.productList.map(data => ({
+          data,
+          counter: 0,
+        })))
+      })
+      .catch(e => {
+        console.error(e);
+        showPopup({message: 'Server error'})
+      });
   }, []);
 
 
@@ -75,7 +79,7 @@ function App() {
           />
         )}
         {page === 1 && <OrderItemList productWithCounterList={productWithCounterList} />}
-      </Layout>      
+      </Layout>
     </div>
   )
 }

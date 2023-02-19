@@ -35,7 +35,7 @@ const OrderItemInput = builder.inputType(
 
 builder.queryField('productList', t => t.prismaField({
     type: ['Product'],
-    resolve: (query) => {
+    resolve: async (query) => {
         return prisma.product.findMany({...query,})
     }
 }))

@@ -13,7 +13,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
-    "\n  query ProductList {\n    productList {\n      name\n      descrition\n      id\n      image\n      price\n      currency\n      numberOfproduct\n    }\n  }\n": types.ProductListDocument,
+    "\n  query ProductList {\n    productList {\n        name\n        descrition\n        id\n        image\n        price\n        currency\n        numberOfproduct\n    }\n  }\n": types.ProductListDocument,
     "\n  mutation NewQuery($orderItemList: [OrderItem!]!) {\n    invoiceUrl(orderItemList: $orderItemList) \n  }\n": types.NewQueryDocument,
 };
 
@@ -34,7 +34,7 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query ProductList {\n    productList {\n      name\n      descrition\n      id\n      image\n      price\n      currency\n      numberOfproduct\n    }\n  }\n"): (typeof documents)["\n  query ProductList {\n    productList {\n      name\n      descrition\n      id\n      image\n      price\n      currency\n      numberOfproduct\n    }\n  }\n"];
+export function graphql(source: "\n  query ProductList {\n    productList {\n        name\n        descrition\n        id\n        image\n        price\n        currency\n        numberOfproduct\n    }\n  }\n"): (typeof documents)["\n  query ProductList {\n    productList {\n        name\n        descrition\n        id\n        image\n        price\n        currency\n        numberOfproduct\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

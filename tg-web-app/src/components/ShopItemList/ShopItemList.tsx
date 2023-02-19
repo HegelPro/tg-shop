@@ -3,7 +3,7 @@ import './ShopItemList.css'
 import { useEffect } from "react";
 import { WithCounter } from "../../util/types";
 import type { ProductQueryType } from "../../App";
-import { useTelegram } from "../../hooks/useTelegram";
+import { MainButton } from "../../util/tg";
 
 interface ShopItemListProps {
   productWithCounterList: WithCounter<ProductQueryType>[]
@@ -12,24 +12,19 @@ interface ShopItemListProps {
   decreament: (id: number) => void
 }
 export const ShopItemList = ({productWithCounterList, increament, decreament, next}: ShopItemListProps) => {
-  const {MainButton} = useTelegram()
-
-    useEffect(() => {
-      MainButton.setText('View order')
-    }, [MainButton])
-
     useEffect(() => {
       if(productWithCounterList.some(({counter}) => counter > 0)) {
         MainButton.show()
       } else {
         MainButton.hide()
       }
-    }, [MainButton, productWithCounterList])
+    }, [productWithCounterList])
 
     useEffect(() => {
+      MainButton.setText('View order')
       MainButton.onClick(next)
       return () => {MainButton.offClick(next)}
-    }, [MainButton, next])
+    }, [next])
 
     return (
       <div className="itemList">

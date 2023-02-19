@@ -16,6 +16,11 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Error = {
+  __typename?: 'Error';
+  message: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   invoiceUrl: Scalars['String'];

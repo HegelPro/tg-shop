@@ -2,7 +2,7 @@ import request from "graphql-request";
 import { useCallback, useEffect, useMemo } from "react";
 import type { ProductQueryType } from "../../App";
 import { graphql } from "../../gql";
-import { useTelegram } from "../../hooks/useTelegram";
+import { MainButton, openInvoice, showPopup } from "../../util/tg";
 import { WithCounter } from "../../util/types";
 import { NoTelegram } from "../NoTelegram/NoTelegram";
 import { OrderItem } from "./OrderItem";
@@ -16,17 +16,18 @@ const getinvoiceUrlQuery = graphql(/* GraphQL */ `
 interface OrderItemListProps {
   productWithCounterList: WithCounter<ProductQueryType>[]
 }
-
 export const OrderItemList = ({productWithCounterList}: OrderItemListProps) => {
-  const {MainButton, openInvoice} = useTelegram();
+  const notEmpryProductWithCounterList = useMemo(
+    () => productWithCounterList.filter(productWithCounter => productWithCounter.counter > 0),
+    [productWithCounterList]
+  )
 
     const onPayHandler = useCallback(() => {
         request(
             import.meta.env.VITE_GRAPHQL_ENDPOINT,
             getinvoiceUrlQuery,
             {
-              orderItemList: productWithCounterList
-                .filter(productWithCounter => productWithCounter.counter > 0)
+              orderItemList: notEmpryProductWithCounterList
                 .map(productWithCounter => ({
                   counter: productWithCounter.counter,
                   productId: productWithCounter.data.id
@@ -34,25 +35,30 @@ export const OrderItemList = ({productWithCounterList}: OrderItemListProps) => {
             }
         )
             .then(data => openInvoice(data.invoiceUrl))
-            .catch(console.error);
-    }, [openInvoice, productWithCounterList])
+            .catch(e => {
+              console.error(e);
+              showPopup({message: 'Server error'});
+            });
+    }, [notEmpryProductWithCounterList])
 
-    const sum = useMemo(() => productWithCounterList.reduce((sum, {data, counter}) => sum + data.price * counter, 0), [productWithCounterList])
+    const sumOfProductPrices = useMemo(
+      () => notEmpryProductWithCounterList.reduce((sum, {data, counter}) => sum + data.price * counter, 0),
+      [notEmpryProductWithCounterList]
+    )
 
     useEffect(() => {
-      MainButton.setText(`Pay: ${sum} rub`);
-    }, [MainButton, sum])
+      MainButton.setText(`Pay: ${sumOfProductPrices} rub`);
+    }, [sumOfProductPrices])
 
     useEffect(() => {
       MainButton.onClick(onPayHandler)
       return () => {MainButton.offClick(onPayHandler)}
-    }, [MainButton, onPayHandler])
+    }, [onPayHandler])
 
     return (
         <div>
             <div>
-                {productWithCounterList
-                    .filter(productWithCounter => productWithCounter.counter > 0)
+                {notEmpryProductWithCounterList
                     .map((productWithCounter) => (
                       <OrderItem key={productWithCounter.data.id} productWithCounter={productWithCounter}/>
                     ))

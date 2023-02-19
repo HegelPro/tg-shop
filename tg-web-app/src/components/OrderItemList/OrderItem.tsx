@@ -11,7 +11,7 @@ export const OrderItem = ({productWithCounter}: OrderItemProps) => {
           <img className='orderItem__image' src={productWithCounter.data.image}/>
           <p>{productWithCounter.data.name}</p>
           <div>
-            <p>{' '}{productWithCounter.counter} x {productWithCounter.data.price} {productWithCounter.data.currency}</p>
+            <p>{productWithCounter.counter} x {productWithCounter.data.price} {productWithCounter.data.currency}</p>
           </div>
         </div>
     );

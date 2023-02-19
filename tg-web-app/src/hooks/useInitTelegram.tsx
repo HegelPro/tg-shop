@@ -1,14 +1,5 @@
 import { useEffect } from "react";
-
-export const useTelegram = () => {
-    return {
-        isTelegram: typeof Telegram.WebApp?.initDataUnsafe?.query_id !== 'undefined',
-        showPopup: (Telegram.WebApp as any).showPopup,
-        BackButton: (Telegram.WebApp as any).BackButton,
-        MainButton: Telegram.WebApp.MainButton,
-        openInvoice: (Telegram.WebApp as any).openInvoice
-    };
-}
+import { BackButton, showPopup } from "../util/tg";
 
 interface UseInitTelegramProps {
   page: number
@@ -16,8 +7,6 @@ interface UseInitTelegramProps {
 }
 export const useInitTelegram = ({page, back}: UseInitTelegramProps) => {
   useEffect(() => Telegram.WebApp.ready(), []);
-  
-  const {BackButton, showPopup} = useTelegram()
   
   useEffect(() => {
     const invoiceClosedHandler = (data: any) => {
@@ -31,7 +20,7 @@ export const useInitTelegram = ({page, back}: UseInitTelegramProps) => {
 
     (Telegram.WebApp as any).onEvent('invoiceClosed', invoiceClosedHandler);
     return () => {(Telegram.WebApp as any).offEvent('invoiceClosed', invoiceClosedHandler)}
-  }, [showPopup])
+  }, [])
 
   useEffect(() => {
     if(page > 0) {
@@ -39,12 +28,12 @@ export const useInitTelegram = ({page, back}: UseInitTelegramProps) => {
     } else {
       BackButton.hide()
     }
-  }, [BackButton, page])
+  }, [page])
 
   useEffect(() => {
     BackButton.onClick(back)
     return () => {
       BackButton.offClick(back)
     }
-  }, [BackButton, back])
+  }, [back])
 }
