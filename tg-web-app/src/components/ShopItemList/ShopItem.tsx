@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import type { ProductQueryType } from '../../App';
+import { ProductWithCounter } from '../../store/productStore';
 import { showPopup } from '../../util/tg';
-import { WithCounter } from '../../util/types';
 import { ModalShopItem } from './ModalShopItem';
 import './ShopItem.css'
 
 interface ShopItemProps {
-    productWithCounter: WithCounter<ProductQueryType>
+    productWithCounter: ProductWithCounter
     increament: () => void;
     decreament: () => void;
 }

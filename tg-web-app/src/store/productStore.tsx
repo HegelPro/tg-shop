@@ -1,7 +1,8 @@
-import request from "graphql-request";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
 import { graphql } from "../gql";
 import { ProductListQuery } from "../gql/graphql";
+import { graphQLClient } from "../util/graphQLClient";
+import { emptyFunction } from "../util/placeholders";
 import { showPopup } from "../util/tg";
 import { WithCounter } from "../util/types";
 
@@ -19,11 +20,8 @@ const getProductListQuery = graphql(/* GraphQL */ `
   }
 `);
 
-const getProductList = (onLoad: (productWithCounterList: WithCounter<ProductQueryType>[]) => void) => {
-  request(
-    import.meta.env.VITE_GRAPHQL_ENDPOINT,
-    getProductListQuery
-  )
+const getProductList = (onLoad: (productWithCounterList: ProductWithCounter[]) => void) => {
+  graphQLClient.request(getProductListQuery)
     .then(data => {
       onLoad(data.productList.map(data => ({
         data,
@@ -36,9 +34,10 @@ const getProductList = (onLoad: (productWithCounterList: WithCounter<ProductQuer
     });
 }
 
-export type ProductQueryType = ProductListQuery['productList'][0]
+type ProductQueryType = ProductListQuery['productList'][0]
+export type ProductWithCounter = WithCounter<ProductQueryType>
 interface ProductStore {
-  productWithCounterList: WithCounter<ProductQueryType>[]
+  productWithCounterList: ProductWithCounter[]
   changeCounterByProductId: (id: number, value: number) => void
   increamentCounterByProductId: (id: number) => void
   decreamentCounterByProductId: (id: number) => void
@@ -46,14 +45,14 @@ interface ProductStore {
 }
 const ProductStoreContext = createContext<ProductStore>({
   productWithCounterList: [],
-  refetchProductWithCounterList: () => {return},
-  changeCounterByProductId: () => {return},
-  increamentCounterByProductId: () => {return},
-  decreamentCounterByProductId: () => {return}
+  refetchProductWithCounterList: emptyFunction,
+  changeCounterByProductId: emptyFunction,
+  increamentCounterByProductId: emptyFunction,
+  decreamentCounterByProductId: emptyFunction
 })
 type ProductStoreProviderProps = PropsWithChildren
 export const ProductStoreProvider = ({children}: ProductStoreProviderProps) => {
-  const [productWithCounterList, setProductWithCounterList] = useState<WithCounter<ProductQueryType>[]>([]);
+  const [productWithCounterList, setProductWithCounterList] = useState<ProductWithCounter[]>([]);
   const changeCounterByProductId = useCallback((id: number, value: number) => {
     setProductWithCounterList(
       productWithCounterList.map(productWithCounter => productWithCounter.data.id === id

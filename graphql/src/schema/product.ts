@@ -87,8 +87,6 @@ builder.mutationField('createInvoiceLink', t => t.field({
                     numberOfproduct: product.numberOfproduct - (args.orderItemList.find(orderItem => product.id === orderItem.productId)?.counter || 0)
                 }
             })))
-            // TODO create order
-
             return new invoiceUrlResult(invoiceLink, 0);
         }
     })
@@ -136,4 +134,4 @@ builder.mutationField('setInvoiceStatus', t => t.field({
         
     }
 })
-);
+)

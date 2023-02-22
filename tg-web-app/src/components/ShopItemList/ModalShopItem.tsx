@@ -1,18 +1,13 @@
-import type { ProductQueryType } from '../../App';
-import { WithCounter } from '../../util/types';
+import { ProductWithCounter } from '../../store/productStore'
 import './ModalShopItem.css'
 
 interface ModalShopItemProps {
-    productWithCounter: WithCounter<ProductQueryType>
+    productWithCounter: ProductWithCounter
     onClose: () => void
-    // increament: () => void;
-    // decreament: () => void;
 }
 export const ModalShopItem = ({
     productWithCounter,
     onClose
-    // increament,
-    // decreament
 }: ModalShopItemProps) => {
     return (
         <div className='modalShopItem' onClick={onClose}>

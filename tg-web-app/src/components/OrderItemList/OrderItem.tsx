@@ -1,9 +1,8 @@
-import type { ProductQueryType } from '../../App';
-import { WithCounter } from '../../util/types';
+import { ProductWithCounter } from '../../store/productStore';
 import './OrderItem.css'
 
 interface OrderItemProps {
-  productWithCounter: WithCounter<ProductQueryType>
+  productWithCounter: ProductWithCounter
 }
 export const OrderItem = ({productWithCounter}: OrderItemProps) => {
     return (
