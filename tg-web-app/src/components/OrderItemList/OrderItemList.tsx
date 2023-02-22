@@ -1,26 +1,74 @@
 import request from "graphql-request";
-import { useCallback, useEffect, useMemo } from "react";
-import type { ProductQueryType } from "../../App";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { graphql } from "../../gql";
+import { useProductStore } from "../../store/productStore";
 import { MainButton, openInvoice, showPopup } from "../../util/tg";
-import { WithCounter } from "../../util/types";
 import { NoTelegram } from "../NoTelegram/NoTelegram";
 import { OrderItem } from "./OrderItem";
 
 const getinvoiceUrlQuery = graphql(/* GraphQL */ `
   mutation NewQuery($orderItemList: [OrderItem!]!) {
-    invoiceUrl(orderItemList: $orderItemList) 
+    createInvoiceLink(orderItemList: $orderItemList) {
+      invoiceUrl
+      orderId
+    }
   }
 `);
 
-interface OrderItemListProps {
-  productWithCounterList: WithCounter<ProductQueryType>[]
-}
-export const OrderItemList = ({productWithCounterList}: OrderItemListProps) => {
+const setInvoiceStatusQuery = graphql(/* GraphQL */ `
+  mutation NewQuery3($orderId: Int!, $invoiceStatus: String!) { 
+    setInvoiceStatus(invoiceStatus: $invoiceStatus, orderId: $orderId)
+  }
+`);
+
+export const OrderItemList = () => {
+  const {productWithCounterList, refetchProductWithCounterList} = useProductStore()
+
   const notEmpryProductWithCounterList = useMemo(
     () => productWithCounterList.filter(productWithCounter => productWithCounter.counter > 0),
     [productWithCounterList]
   )
+
+  const [orderId, setOrderId] = useState<number | undefined>();
+
+  const setInvoiceStatus = useCallback((invoiceStatus: string, onLoad: () => void) => {
+    if (!orderId) return;
+    
+    request(
+      import.meta.env.VITE_GRAPHQL_ENDPOINT,
+      setInvoiceStatusQuery,
+      {
+        invoiceStatus,
+        orderId
+      }
+    )
+      .then(onLoad)
+      .catch(e => {
+        console.error(e);
+        showPopup({message: 'Server error'});
+      })
+  }, [orderId])
+  
+  useEffect(() => {
+    const invoiceClosedHandler = (data: {status: 'paid' | 'cancelled' | 'failed' | 'pending'}) => {
+      if(data.status === 'paid') {
+        setInvoiceStatus(data.status, refetchProductWithCounterList)
+        showPopup({message: 'invoice was paid successfully'})
+      } else if(data.status === 'cancelled') {
+        setInvoiceStatus(data.status, refetchProductWithCounterList)
+        showPopup({message: 'user closed this invoice without paying'})
+      } else if(data.status === 'failed') {
+        setInvoiceStatus(data.status, refetchProductWithCounterList)
+        showPopup({message: 'user tried to pay, but the payment was failed'})
+      } else if(data.status === 'pending') {
+        setInvoiceStatus(data.status, refetchProductWithCounterList)
+        showPopup({message: 'the payment is still processing. The bot will receive a service message about a successful payment when the payment is successfully paid'})
+      }
+    };
+
+    (Telegram.WebApp as any).onEvent('invoiceClosed', invoiceClosedHandler);
+    return () => {(Telegram.WebApp as any).offEvent('invoiceClosed', invoiceClosedHandler)}
+  }, [refetchProductWithCounterList, setInvoiceStatus])
 
     const onPayHandler = useCallback(() => {
         request(
@@ -34,7 +82,10 @@ export const OrderItemList = ({productWithCounterList}: OrderItemListProps) => {
                 }))
             }
         )
-            .then(data => openInvoice(data.invoiceUrl))
+            .then(data => {
+              openInvoice(data.createInvoiceLink.invoiceUrl)
+              setOrderId(data.createInvoiceLink.orderId)
+            })
             .catch(e => {
               console.error(e);
               showPopup({message: 'Server error'});

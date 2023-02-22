@@ -1,17 +1,19 @@
 import { ShopItem } from "./ShopItem"
 import './ShopItemList.css'
 import { useEffect } from "react";
-import { WithCounter } from "../../util/types";
-import type { ProductQueryType } from "../../App";
 import { MainButton } from "../../util/tg";
+import { useProductStore } from "../../store/productStore";
 
 interface ShopItemListProps {
-  productWithCounterList: WithCounter<ProductQueryType>[]
   next: () => void
-  increament: (id: number) => void
-  decreament: (id: number) => void
 }
-export const ShopItemList = ({productWithCounterList, increament, decreament, next}: ShopItemListProps) => {
+export const ShopItemList = ({next}: ShopItemListProps) => {
+  const {
+    productWithCounterList,
+    decreamentCounterByProductId,
+    increamentCounterByProductId
+  } = useProductStore()
+
     useEffect(() => {
       if(productWithCounterList.some(({counter}) => counter > 0)) {
         MainButton.show()
@@ -31,8 +33,8 @@ export const ShopItemList = ({productWithCounterList, increament, decreament, ne
         {productWithCounterList.map((productWithCounter) => <ShopItem
           key={productWithCounter.data.id}
           productWithCounter={productWithCounter}
-          increament={() => increament(productWithCounter.data.id)}
-          decreament={() => decreament(productWithCounter.data.id)}
+          increament={() => increamentCounterByProductId(productWithCounter.data.id)}
+          decreament={() => decreamentCounterByProductId(productWithCounter.data.id)}
         />)}
       </div>
     )

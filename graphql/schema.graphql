@@ -7,8 +7,14 @@ type Error {
   message: String!
 }
 
+type InvoiceUrlResult {
+  invoiceUrl: String!
+  orderId: Int!
+}
+
 type Mutation {
-  invoiceUrl(orderItemList: [OrderItem!]!): String!
+  createInvoiceLink(orderItemList: [OrderItem!]!): InvoiceUrlResult!
+  setInvoiceStatus(invoiceStatus: String!, orderId: Int!): String!
 }
 
 input OrderItem {

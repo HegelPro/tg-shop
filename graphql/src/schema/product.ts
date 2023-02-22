@@ -40,8 +40,25 @@ builder.queryField('productList', t => t.prismaField({
     }
 }))
 
-builder.mutationField('invoiceUrl', t => t.field({
-        type: 'String',
+class invoiceUrlResult {
+    invoiceUrl: string;
+    orderId: number;
+    constructor(invoiceUrl: string, orderId: number) {
+        this.invoiceUrl = invoiceUrl
+        this.orderId = orderId
+    }
+};
+
+const InvoiceUrlResult = builder.objectType(invoiceUrlResult, {
+    name: 'InvoiceUrlResult',
+    fields: t => ({
+        invoiceUrl: t.exposeString('invoiceUrl'),
+        orderId: t.exposeInt('orderId'),
+    })
+})
+
+builder.mutationField('createInvoiceLink', t => t.field({
+        type: InvoiceUrlResult,
         args: {
             orderItemList: t.arg({
                 type: t.arg.listRef(OrderItemInput),
@@ -53,8 +70,8 @@ builder.mutationField('invoiceUrl', t => t.field({
                 where: {
                     id: {in: args.orderItemList.map(orderItem => orderItem.productId)}
                 },
-            })
-            return createInvoiceLink(
+            });
+            const invoiceLink = await createInvoiceLink(
                 bot,
                 productList
                     .map(product => ({
@@ -62,6 +79,61 @@ builder.mutationField('invoiceUrl', t => t.field({
                         data: product
                     }))
             )
+            const _updatedProduct = await Promise.all(productList.map(product => prisma.product.update({
+                where: {
+                    id: product.id
+                },
+                data: {
+                    numberOfproduct: product.numberOfproduct - (args.orderItemList.find(orderItem => product.id === orderItem.productId)?.counter || 0)
+                }
+            })))
+            // TODO create order
+
+            return new invoiceUrlResult(invoiceLink, 0);
         }
     })
+);
+
+builder.mutationField('setInvoiceStatus', t => t.field({
+    type: 'String',
+    args: {
+        invoiceStatus: t.arg.string({required: true}),
+        orderId: t.arg.int({required: true})
+    },
+    resolve: async (parent, args) => {
+        // TODO get it from order
+        const orderItemList: {productId: number, counter: number}[] = [];
+
+        const productList = await prisma.product.findMany({
+            where: {
+                id: {in: orderItemList.map(orderItem => orderItem.productId)}
+            },
+        });
+        const returnCounterToProducts = async () => {
+            const _updatedProduct = await Promise.all(productList.map(product => prisma.product.update({
+                where: {
+                    id: product.id
+                },
+                data: {
+                    numberOfproduct: product.numberOfproduct + (orderItemList.find(orderItem => product.id === orderItem.productId)?.counter || 0)
+                }
+            })))
+        }
+        
+        if(args.invoiceStatus === 'paid') {
+            return ''
+        } else if(args.invoiceStatus === 'cancelled') {
+            await returnCounterToProducts();
+            return ''
+        } else if(args.invoiceStatus === 'failed') {
+            await returnCounterToProducts();
+            return ''
+        } else if(args.invoiceStatus === 'pending') {
+            // TODO don't know where need to return it
+            return ''
+        }
+        return ''
+        
+    }
+})
 );

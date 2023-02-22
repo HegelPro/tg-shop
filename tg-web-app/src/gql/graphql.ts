@@ -21,14 +21,27 @@ export type Error = {
   message: Scalars['String'];
 };
 
+export type InvoiceUrlResult = {
+  __typename?: 'InvoiceUrlResult';
+  invoiceUrl: Scalars['String'];
+  orderId: Scalars['Int'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  invoiceUrl: Scalars['String'];
+  createInvoiceLink: InvoiceUrlResult;
+  setInvoiceStatus: Scalars['String'];
 };
 
 
-export type MutationInvoiceUrlArgs = {
+export type MutationCreateInvoiceLinkArgs = {
   orderItemList: Array<OrderItem>;
+};
+
+
+export type MutationSetInvoiceStatusArgs = {
+  invoiceStatus: Scalars['String'];
+  orderId: Scalars['Int'];
 };
 
 export type OrderItem = {
@@ -58,18 +71,27 @@ export type Query = {
   productList: Array<Product>;
 };
 
-export type ProductListQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ProductListQuery = { __typename?: 'Query', productList: Array<{ __typename?: 'Product', name: string, descrition?: string | null, id: number, image: string, price: number, currency: string, numberOfproduct: number }> };
-
 export type NewQueryMutationVariables = Exact<{
   orderItemList: Array<OrderItem> | OrderItem;
 }>;
 
 
-export type NewQueryMutation = { __typename?: 'Mutation', invoiceUrl: string };
+export type NewQueryMutation = { __typename?: 'Mutation', createInvoiceLink: { __typename?: 'InvoiceUrlResult', invoiceUrl: string, orderId: number } };
+
+export type NewQuery3MutationVariables = Exact<{
+  orderId: Scalars['Int'];
+  invoiceStatus: Scalars['String'];
+}>;
 
 
+export type NewQuery3Mutation = { __typename?: 'Mutation', setInvoiceStatus: string };
+
+export type ProductListQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProductListQuery = { __typename?: 'Query', productList: Array<{ __typename?: 'Product', name: string, descrition?: string | null, id: number, image: string, price: number, currency: string, numberOfproduct: number }> };
+
+
+export const NewQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"NewQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderItemList"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"OrderItem"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createInvoiceLink"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderItemList"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderItemList"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"invoiceUrl"}},{"kind":"Field","name":{"kind":"Name","value":"orderId"}}]}}]}}]} as unknown as DocumentNode<NewQueryMutation, NewQueryMutationVariables>;
+export const NewQuery3Document = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"NewQuery3"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"invoiceStatus"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"setInvoiceStatus"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"invoiceStatus"},"value":{"kind":"Variable","name":{"kind":"Name","value":"invoiceStatus"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderId"}}}]}]}}]} as unknown as DocumentNode<NewQuery3Mutation, NewQuery3MutationVariables>;
 export const ProductListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ProductList"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"productList"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"descrition"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"image"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"currency"}},{"kind":"Field","name":{"kind":"Name","value":"numberOfproduct"}}]}}]}}]} as unknown as DocumentNode<ProductListQuery, ProductListQueryVariables>;
-export const NewQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"NewQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderItemList"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"OrderItem"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"invoiceUrl"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderItemList"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderItemList"}}}]}]}}]} as unknown as DocumentNode<NewQueryMutation, NewQueryMutationVariables>;
