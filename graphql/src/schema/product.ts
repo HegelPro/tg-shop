@@ -71,8 +71,10 @@ builder.mutationField('createInvoiceLink', t => t.field({
                     id: {in: args.orderItemList.map(orderItem => orderItem.productId)}
                 },
             });
+            const invoiceLinkPayload = '9039039'
             const invoiceLink = await createInvoiceLink(
                 bot,
+                invoiceLinkPayload,
                 productList
                     .map(product => ({
                         counter: args.orderItemList.find(orderItem => product.id === orderItem.productId)?.counter || -99999,
@@ -87,7 +89,25 @@ builder.mutationField('createInvoiceLink', t => t.field({
                     numberOfproduct: product.numberOfproduct - (args.orderItemList.find(orderItem => product.id === orderItem.productId)?.counter || 0)
                 }
             })))
-            return new invoiceUrlResult(invoiceLink, 0);
+            // TODO write sum
+            const sumOfProductPrices = 0;
+            const userData = await prisma.userData.findFirst()
+            const order = await prisma.order.create({
+                data: {
+                    userDataId: userData?.id || 0,
+                    payload: invoiceLinkPayload,
+                    currency: 'RUB',
+                    sumOfProductPrices
+                }
+            })
+            const _orderItemList = await prisma.orderItem.createMany({
+                data: args.orderItemList.map(orderItem => ({
+                    productId: orderItem.productId,
+                    orderId: order.id,
+                    count: orderItem.counter,
+                }))
+            })
+            return new invoiceUrlResult(invoiceLink, order.id);
         }
     })
 );
@@ -99,8 +119,11 @@ builder.mutationField('setInvoiceStatus', t => t.field({
         orderId: t.arg.int({required: true})
     },
     resolve: async (parent, args) => {
-        // TODO get it from order
-        const orderItemList: {productId: number, counter: number}[] = [];
+        const orderItemList = await prisma.orderItem.findMany({
+            where: {
+                orderId: args.orderId
+            }
+        })
 
         const productList = await prisma.product.findMany({
             where: {

@@ -11,38 +11,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
-}
-
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  viewCount Int      @default(0)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
-}
-
 model Product {
   id                Int             @id @default(autoincrement())
-  name              String
+  name              String          @unique
   descrition        String?
   price             Float
   currency          String          @default("RUB")
-  numberOfproduct   Int
+  numberOfproduct   Int             @default(0)
   image             String
   productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
   productCategoryId Int
+  orderItem         OrderItem[]
 }
 
 model ProductCategory {
-  id      Int      @id @unique @default(autoincrement())
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
   product Product[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  count     Int
+}
+
+model Order {
+  id                 Int         @id @default(autoincrement())
+  userData           UserData    @relation(fields: [userDataId], references: [id])
+  userDataId         Int
+  payload            String
+  currency           String      @default("RUB")
+  sumOfProductPrices Float
+  orderStatus        OrderStatus @default(unpaid)
+  orderItem          OrderItem[]
+}
+
+enum OrderStatus {
+  unpaid
+  paid
+  cancelled
+  failed
+  pending
+  delivering
+  delivered
+  returned
+}
+
+model UserData {
+  id           Int     @id @default(autoincrement())
+  tgId         Int     @unique
+  firstName    String
+  lastName     String
+  username     String
+  languageCode String
+  order        Order[]
 }

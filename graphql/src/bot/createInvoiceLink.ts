@@ -6,7 +6,7 @@ interface WithCounter<T> {
     counter: number
 }
 
-export const createInvoiceLink = async (bot: Bot, productWithCounterList: WithCounter<Product>[]) => {
+export const createInvoiceLink = async (bot: Bot, payload: string, productWithCounterList: WithCounter<Product>[]) => {
     const prices = productWithCounterList.map(productWithCounter => ({
         label: `${productWithCounter.data.name} x ${productWithCounter.counter}`,
         amount: productWithCounter.counter * productWithCounter.data.price * 100
@@ -17,7 +17,7 @@ export const createInvoiceLink = async (bot: Bot, productWithCounterList: WithCo
     const invoiceLink = await bot.api.createInvoiceLink(
         'PRODUCTS',
         'something',
-        '9039039',
+        payload,
         process.env.PROVIDER_TOKEN || "",
         'RUB',
         prices,
@@ -27,7 +27,7 @@ export const createInvoiceLink = async (bot: Bot, productWithCounterList: WithCo
         }
     );
 
-    console.log("invoiceLink is created");
+    console.log('invoiceLink is created');
 
     return invoiceLink
 }
