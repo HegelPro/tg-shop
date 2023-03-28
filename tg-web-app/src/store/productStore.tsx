@@ -66,7 +66,7 @@ export const ProductStoreProvider = ({children}: ProductStoreProviderProps) => {
 
   const refetchProductWithCounterList = useCallback(() => getProductList(setProductWithCounterList), [])
 
-  useEffect(() => refetchProductWithCounterList, [refetchProductWithCounterList]);
+  useEffect(() => {refetchProductWithCounterList()}, [refetchProductWithCounterList]);
 
   return (
     <ProductStoreContext.Provider value={{
