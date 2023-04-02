@@ -20,7 +20,7 @@ const getProductListQuery = graphql(/* GraphQL */ `
   }
 `);
 
-const getProductList = (onLoad: (productWithCounterList: ProductWithCounter[]) => void) => {
+export const getProductList = (onLoad: (productWithCounterList: ProductWithCounter[]) => void) => {
   graphQLClient.request(getProductListQuery)
     .then(data => {
       onLoad(data.productList.map(data => ({

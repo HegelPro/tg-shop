@@ -1,11 +1,5 @@
-import { Bot, Keyboard } from "grammy";
+import { Bot } from "grammy";
 
-const keyboard = new Keyboard()
-    .text("Yes, they certainly are")
-    .text("I'm not quite sure").row()
-    .text("No. 😈")
-    .resized();
-    
 
 export const addCommands = (bot: Bot) => {
     bot.api.setMyCommands([
@@ -13,13 +7,6 @@ export const addCommands = (bot: Bot) => {
         { command: "help", description: "Show help text" },
         { command: "settings", description: "Open settings" },
     ]);
-
-    // bot.command('help', (ctx) => {
-    //     ctx.reply('null', {
-    //         reply_markup: keyboard,
-    //     });
-    // });
-    
     
     bot.command('start', async (ctx) => {
         ctx.reply('Welcame to our store')
