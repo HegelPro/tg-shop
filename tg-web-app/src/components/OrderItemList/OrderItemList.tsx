@@ -59,7 +59,7 @@ export const OrderItemList = () => {
         showPopup({ message: 'user closed this invoice without paying' })
       } else if (data.status === 'failed') {
         setInvoiceStatus(data.status, refetchProductWithCounterList)
-        showPopup({ message: 'user tried to pay, but the payment was failed' })
+        showPopup({ message: 'Произошла ошибка при оплате заказа' })
       } else if (data.status === 'pending') {
         setInvoiceStatus(data.status, refetchProductWithCounterList)
         showPopup({ message: 'the payment is still processing. The bot will receive a service message about a successful payment when the payment is successfully paid' })
@@ -97,7 +97,7 @@ export const OrderItemList = () => {
   )
 
   useEffect(() => {
-    MainButton.setText(`Pay: ${sumOfProductPrices} rub`);
+    MainButton.setText(`Оплатить: ${sumOfProductPrices} рублей`);
   }, [sumOfProductPrices])
 
   useEffect(() => {

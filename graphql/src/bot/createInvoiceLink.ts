@@ -15,8 +15,8 @@ export const createInvoiceLink = async (bot: Bot, payload: string, productWithCo
     console.log("Prices:", prices);
 
     const invoiceLink = await bot.api.createInvoiceLink(
-        'PRODUCTS',
-        'something',
+        'Товары',
+        'Произведите оплату товара',
         payload,
         process.env.PROVIDER_TOKEN || "",
         'RUB',

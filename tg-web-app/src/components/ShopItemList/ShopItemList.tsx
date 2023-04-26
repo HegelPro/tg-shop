@@ -23,7 +23,7 @@ export const ShopItemList = ({next}: ShopItemListProps) => {
     }, [productWithCounterList])
 
     useEffect(() => {
-      MainButton.setText('View order')
+      MainButton.setText('Перейти к заказу')
       MainButton.onClick(next)
       return () => {MainButton.offClick(next)}
     }, [next])

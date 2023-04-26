@@ -136,7 +136,7 @@ builder.mutationField('setInvoiceStatus', t => t.field({
                     id: product.id
                 },
                 data: {
-                    numberOfproduct: product.numberOfproduct + (orderItemList.find(orderItem => product.id === orderItem.productId)?.counter || 0)
+                    numberOfproduct: product.numberOfproduct + (orderItemList.find(orderItem => product.id === orderItem.productId)?.count || 0)
                 }
             })))
         }

@@ -1,6 +1,4 @@
 import { builder } from '../builder'
-// import './user'
-// import './post'
 import './product'
 import { writeFileSync } from 'fs'
 import { resolve } from 'path'

@@ -3,13 +3,21 @@ import { Bot } from "grammy";
 
 export const addCommands = (bot: Bot) => {
     bot.api.setMyCommands([
-        { command: "start", description: "Start the bot" },
-        { command: "help", description: "Show help text" },
-        { command: "settings", description: "Open settings" },
+        { command: "start", description: "предназначена для того, чтобы начать работу с ботом" },
+        { command: "help", description: "команда которая служет для описания того, как необходимо работать с ботом" },
     ]);
     
     bot.command('start', async (ctx) => {
-        ctx.reply('Welcame to our store')
+        ctx.reply('Добро пожаловать в Telegram магазин! Чтобы перейти в интерфейс магазина нажмити на кнопку "Shop", которая расположена внизу чата.')
+    });
+
+    bot.command('help', async (ctx) => {
+        ctx.reply(
+            'Если вы хотите перейти в интерфейс магазина нажмити на кнопку "Shop", которая расположена внизу чата.\n\n'
+            +'Список доступных команд:\n'
+            + '/start - предназначена для того, чтобы начать работу с ботом\n'
+            + '/help - команда которая служет для описания того, как необходимо работать с ботом'
+        )
     });
     
     bot.on(':successful_payment', (ctx, next) => {
@@ -32,11 +40,4 @@ export const addCommands = (bot: Bot) => {
         console.log(ctx.message?.successful_payment);
         next();
     })
-    
-    // Reply to any message with "Hi there!".
-    bot.on("message", (ctx) => {
-        console.log(ctx.message?.web_app_data);
-        
-        ctx.reply("Hi there!")
-    });
 }
