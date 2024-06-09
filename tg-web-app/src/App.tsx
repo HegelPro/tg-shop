@@ -5,11 +5,10 @@ import { useInitTelegram } from './hooks/useInitTelegram';
 import { Layout } from './components/Layout/Layout';
 import { ProductStoreProvider } from './store/productStore';
 
-
-function App() {
+export const App = () => {
   const [page, setPage] = useState(0)
-  const next = useCallback(() => setPage(page + 1), [page, setPage]);
-  const back = useCallback(() => setPage(page - 1), [page, setPage]);
+  const next = useCallback(() => setPage(page + 1), [page]);
+  const back = useCallback(() => setPage(page - 1), [page]);
 
   useInitTelegram({ page, back });
 
@@ -29,5 +28,3 @@ function App() {
     </div>
   )
 }
-
-export default App
