@@ -1,2 +1,2 @@
-schema: 'https://tg-store.site'
+schema: VITE_GRAPHQL_ENDPOINT
 documents: 'src/**/*.{graphql,js,ts,jsx,tsx}'
