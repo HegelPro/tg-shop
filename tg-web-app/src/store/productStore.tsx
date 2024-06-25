@@ -20,19 +20,20 @@ const getProductListQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export const getProductList = (onLoad: (productWithCounterList: ProductWithCounter[]) => void) => {
+export const getProductList = () =>
   graphQLClient.request(getProductListQuery)
-    .then(data => {
-      onLoad(data.productList.map(data => ({
+    .then(data =>
+      data.productList.map(data => ({
         data,
         counter: 0,
-      })))
-    })
+      }))
+    )
     .catch(e => {
       console.error(e);
-      showPopup({message: 'Server error'})
+      showPopup({ message: 'Server error' })
+      return []
     });
-}
+
 
 type ProductQueryType = ProductListQuery['productList'][0]
 export type ProductWithCounter = WithCounter<ProductQueryType>
@@ -51,7 +52,7 @@ const ProductStoreContext = createContext<ProductStore>({
   decreamentCounterByProductId: emptyFunction
 })
 type ProductStoreProviderProps = PropsWithChildren
-export const ProductStoreProvider = ({children}: ProductStoreProviderProps) => {
+export const ProductStoreProvider = ({ children }: ProductStoreProviderProps) => {
   const [productWithCounterList, setProductWithCounterList] = useState<ProductWithCounter[]>([]);
   const changeCounterByProductId = useCallback((id: number, value: number) => {
     setProductWithCounterList(
@@ -64,9 +65,14 @@ export const ProductStoreProvider = ({children}: ProductStoreProviderProps) => {
   const increamentCounterByProductId = useCallback((id: number) => changeCounterByProductId(id, 1), [changeCounterByProductId]);
   const decreamentCounterByProductId = useCallback((id: number) => changeCounterByProductId(id, -1), [changeCounterByProductId]);
 
-  const refetchProductWithCounterList = useCallback(() => getProductList(setProductWithCounterList), [])
+  const refetchProductWithCounterList = useCallback(() => {
+    getProductList()
+      .then(productList => {
+        setProductWithCounterList(productList)
+      })
+  }, [])
 
-  useEffect(() => {refetchProductWithCounterList()}, [refetchProductWithCounterList]);
+  useEffect(() => { refetchProductWithCounterList() }, [refetchProductWithCounterList]);
 
   return (
     <ProductStoreContext.Provider value={{

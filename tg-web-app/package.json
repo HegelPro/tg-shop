@@ -7,8 +7,8 @@
     "build": "npm run lint && tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint src",
-    "codegen": "graphql-codegen --config codegen.ts",
-    "codegen:watch": "graphql-codegen --config codegen.ts --watch",
+    "codegen": "graphql-codegen",
+    "codegen:watch": "graphql-codegen --watch",
     "test": "jest"
   },
   "dependencies": {

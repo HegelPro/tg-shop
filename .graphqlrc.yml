@@ -1,2 +1,2 @@
-schema: VITE_GRAPHQL_ENDPOINT
+schema: https://hegel-tg-store.ru/graphql
 documents: 'src/**/*.{graphql,js,ts,jsx,tsx}'
