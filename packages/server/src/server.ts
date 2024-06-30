@@ -33,11 +33,12 @@ const app = fastify({ logger: true, https: {
 },
 })
 
-const serverPort = Number.parseInt(process.env?.SERVER_PORT || '4000')
+const SERVER_PORT = Number.parseInt(process.env?.SERVER_PORT || '4000')
 
-const frontendPath = path.join(__dirname, '../../tg-web-app/dist')
+const FRONTEND_PATH = path.dirname(require.resolve("hegel-tg-store-client"))
+
 app.register(fastifyStatic, {
-  root: frontendPath,
+  root: FRONTEND_PATH,
 })
 
 app.route({
@@ -61,6 +62,6 @@ app.route({
 })
  
 app.listen({
-  port: serverPort,
+  port: SERVER_PORT,
   host: '0.0.0.0'
 })

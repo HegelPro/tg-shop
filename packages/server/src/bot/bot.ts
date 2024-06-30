@@ -26,6 +26,7 @@ bot.on(':successful_payment', (ctx, next) => {
     console.log(':successful_payment');
     
     console.log(ctx.message?.successful_payment);
+    ctx.reply("successful_payment");
     next();
 })
 
@@ -33,6 +34,7 @@ bot.on('msg:successful_payment', (ctx, next) => {
     console.log('msg:successful_payment');
     
     console.log(ctx.message?.successful_payment);
+    ctx.reply("msg:successful_payment");
     next();
 })
 
@@ -40,5 +42,6 @@ bot.on('message:successful_payment', (ctx, next) => {
     console.log('message:successful_payment');
     
     console.log(ctx.message?.successful_payment);
+    ctx.reply("message:successful_payment");
     next();
 })

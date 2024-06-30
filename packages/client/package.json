@@ -1,16 +1,18 @@
 {
-  "name": "tg-web-app",
+  "name": "hegel-tg-store-client",
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite",
-    "build": "npm run lint && tsc && vite build",
+    "dev": "npm run codegen:watch && vite",
+    "build": "npm -s run clean && npm run lint && tsc && vite build",
+    "clean": "rm -rf dist",
     "preview": "vite preview",
     "lint": "eslint src",
     "codegen": "graphql-codegen",
     "codegen:watch": "graphql-codegen --watch",
     "test": "jest"
   },
+  "main": "./dist/index.html",
   "dependencies": {
     "@babel/preset-typescript": "^7.21.4",
     "graphql": "^16.6.0",

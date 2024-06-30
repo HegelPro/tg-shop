@@ -1,5 +1,6 @@
 node_modules/
 dist/
+certs/
 src/generated/
 *.env*
 *.db

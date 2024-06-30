@@ -1,0 +1,29 @@
+{
+  "name": "hegel-tg-store",
+  "version": "1.0.0",
+  "description": "https://magenta-manatee-dc5dd7.netlify.app/ - site",
+  "main": "./server/dist/server.js",
+  "workspaces": [
+    "./packages/client",
+    "./packages/server"
+  ],
+  "scripts": {
+    "build:client": "npm run build --prefix=packages/client",
+    "build:server": "npm run build --prefix=packages/server",
+    "build": "npm run build:client && npm run build:server",
+    "start:prod": "npm run build && npm run start --prefix=packages/server",
+    "dev:client": "npm run dev --prefix=packages/client",
+    "test:client": "npm run test --prefix=packages/client",
+    "test": "npm run test:client"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HegelPro/tg-store.git"
+  },
+  "author": "HegelPro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HegelPro/tg-store/issues"
+  },
+  "homepage": "https://github.com/HegelPro/tg-store#readme"
+}
