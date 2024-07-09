@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "dev": "npm run codegen:watch && vite",
+    "dev": "vite",
     "build": "npm -s run clean && npm run lint && tsc && vite build",
     "clean": "rm -rf dist",
     "preview": "vite preview",

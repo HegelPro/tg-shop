@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { ProductWithCounter } from '../../store/productStore'
+import { getTelegramObject } from '../../util/getTelegramObject'
 import './ModalShopItem.css'
 
 interface ModalShopItemProps {
@@ -9,8 +11,22 @@ export const ModalShopItem = ({
     productWithCounter,
     onClose
 }: ModalShopItemProps) => {
+    useEffect(() => {
+        getTelegramObject().WebApp.BackButton.show()
+        return () => {
+            getTelegramObject().WebApp.BackButton.hide()
+        }
+    }, [])
+
+    useEffect(() => {
+        getTelegramObject().WebApp.BackButton.onClick(onClose)
+        return () => {
+            getTelegramObject().WebApp.BackButton.offClick(onClose)
+        }
+    }, [onClose])
+
     return (
-        <div className='modalShopItem' onClick={onClose}>
+        <div className='modalShopItem'>
             <div className='modalShopItem__imageContainer'>
                 <img className='pure-img modalShopItem__image' src={productWithCounter.data.image} />
             </div>

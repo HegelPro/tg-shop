@@ -1,3 +1,5 @@
+// TODO Replace typing to ./util/getTelegramObject
+
 export declare namespace TelegramWebApps {
     interface SDK {
       WebApp: WebApp;
@@ -254,5 +256,5 @@ export declare namespace TelegramWebApps {
   }
   
   declare global {
-    const Telegram: TelegramWebApps.SDK;
+    const Telegram: unknown;
   }

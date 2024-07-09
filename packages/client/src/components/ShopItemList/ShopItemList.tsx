@@ -1,8 +1,8 @@
 import { ShopItem } from "./ShopItem"
 import './ShopItemList.css'
 import { useEffect } from "react";
-import { MainButton } from "../../util/tg";
 import { useProductStore } from "../../store/productStore";
+import { getTelegramObject } from "../../util/getTelegramObject";
 
 interface ShopItemListProps {
   next: () => void
@@ -16,16 +16,16 @@ export const ShopItemList = ({next}: ShopItemListProps) => {
 
     useEffect(() => {
       if(productWithCounterList.some(({counter}) => counter > 0)) {
-        MainButton.show()
+        getTelegramObject().WebApp.MainButton.show()
       } else {
-        MainButton.hide()
+        getTelegramObject().WebApp.MainButton.hide()
       }
     }, [productWithCounterList])
 
     useEffect(() => {
-      MainButton.setText('Перейти к заказу')
-      MainButton.onClick(next)
-      return () => {MainButton.offClick(next)}
+      getTelegramObject().WebApp.MainButton.setText('Перейти к заказу')
+      getTelegramObject().WebApp.MainButton.onClick(next)
+      return () => {getTelegramObject().WebApp.MainButton.offClick(next)}
     }, [next])
 
     return (

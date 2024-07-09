@@ -1,10 +1,10 @@
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react";
-import { graphql } from "../gql";
 import { ProductListQuery } from "../gql/graphql";
-import { graphQLClient } from "../util/graphQLClient";
 import { emptyFunction } from "../util/placeholders";
-import { showPopup } from "../util/tg";
-import { WithCounter } from "../util/types";
+import { WithCounter, wrapWithCounter } from "../util/withCounter";
+import { graphql } from "../gql";
+import { getTelegramObject } from "../util/getTelegramObject";
+import { graphQLClient } from "../util/graphQLClient";
 
 const getProductListQuery = graphql(/* GraphQL */ `
   query ProductList {
@@ -20,21 +20,6 @@ const getProductListQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export const getProductList = () =>
-  graphQLClient.request(getProductListQuery)
-    .then(data =>
-      data.productList.map(data => ({
-        data,
-        counter: 0,
-      }))
-    )
-    .catch(e => {
-      console.error(e);
-      showPopup({ message: 'Server error' })
-      return []
-    });
-
-
 type ProductQueryType = ProductListQuery['productList'][0]
 export type ProductWithCounter = WithCounter<ProductQueryType>
 interface ProductStore {
@@ -44,6 +29,7 @@ interface ProductStore {
   decreamentCounterByProductId: (id: number) => void
   refetchProductWithCounterList: () => void
 }
+
 const ProductStoreContext = createContext<ProductStore>({
   productWithCounterList: [],
   refetchProductWithCounterList: emptyFunction,
@@ -51,8 +37,8 @@ const ProductStoreContext = createContext<ProductStore>({
   increamentCounterByProductId: emptyFunction,
   decreamentCounterByProductId: emptyFunction
 })
-type ProductStoreProviderProps = PropsWithChildren
-export const ProductStoreProvider = ({ children }: ProductStoreProviderProps) => {
+
+export const ProductStoreProvider = ({ children }: PropsWithChildren) => {
   const [productWithCounterList, setProductWithCounterList] = useState<ProductWithCounter[]>([]);
   const changeCounterByProductId = useCallback((id: number, value: number) => {
     setProductWithCounterList(
@@ -66,10 +52,13 @@ export const ProductStoreProvider = ({ children }: ProductStoreProviderProps) =>
   const decreamentCounterByProductId = useCallback((id: number) => changeCounterByProductId(id, -1), [changeCounterByProductId]);
 
   const refetchProductWithCounterList = useCallback(() => {
-    getProductList()
-      .then(productList => {
-        setProductWithCounterList(productList)
-      })
+    graphQLClient.request(getProductListQuery)
+      .then(data => data.productList.map(wrapWithCounter))
+      .then(productWithCounterList => setProductWithCounterList(productWithCounterList))
+      .catch(e => {
+        console.error(e);
+        getTelegramObject().WebApp.showPopup({ message: 'Server error' })
+      });
   }, [])
 
   useEffect(() => { refetchProductWithCounterList() }, [refetchProductWithCounterList]);

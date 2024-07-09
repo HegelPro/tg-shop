@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { ProductWithCounter } from '../../store/productStore';
-import { showPopup } from '../../util/tg';
 import { ModalShopItem } from './ModalShopItem';
 import './ShopItem.css'
+import { getTelegramObject } from '../../util/getTelegramObject';
 
 interface ShopItemProps {
     productWithCounter: ProductWithCounter
@@ -21,7 +21,7 @@ export const ShopItem = ({
 
     useEffect(() => {
         if (productWithCounter.counter === productWithCounter.data.numberOfproduct) {
-            showPopup({message: `You choose maximum amount of ${productWithCounter.data.name} products`})
+            getTelegramObject().WebApp.showPopup({message: `You choose maximum amount of ${productWithCounter.data.name} products`})
         }
     }, [productWithCounter])
 
