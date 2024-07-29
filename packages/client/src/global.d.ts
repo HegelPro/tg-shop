@@ -255,6 +255,6 @@ export declare namespace TelegramWebApps {
     }
   }
   
-  declare global {
-    const Telegram: unknown;
-  }
+declare global {
+  const Telegram: unknown;
+}

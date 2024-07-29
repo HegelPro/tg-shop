@@ -14,8 +14,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    // "types": "src/app/global.d.ts"
   },
+  // "files": ["src/global.d.ts"],
   "include": ["src"],
+  // "exclude": ["./src/app/global.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

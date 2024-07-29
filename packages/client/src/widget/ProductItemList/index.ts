@@ -1,0 +1,1 @@
+export {ProductItemList} from './components/ProductItemList/ProductItemList'
