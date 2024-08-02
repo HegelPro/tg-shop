@@ -1,7 +1,7 @@
 import { graphql } from "../../../shared/api/gql";
-import { wrapWithCounter } from "../../../shared/lib/withCounter";
-import { getTelegramObject } from "../../telegram";
 import { graphQLClient } from "../../../shared/api/graphQLClient";
+import { ProductQueryType } from "../model/Product";
+import { serverErrorHandler } from "../../../shared/api/serverErrorHandler";
 
 const getProductListQuery = graphql(/* GraphQL */ `
   query ProductList {
@@ -19,9 +19,8 @@ const getProductListQuery = graphql(/* GraphQL */ `
 
 export const getProductList = () =>
   graphQLClient.request(getProductListQuery)
-    .then(data => data.productList.map(wrapWithCounter))
+    .then(data => data.productList)
     .catch(e => {
-      console.error(e);
-      getTelegramObject().WebApp.showPopup({ message: 'Server error' })
-      return [];
+      serverErrorHandler(e);
+      return [] as ProductQueryType[];
     });

@@ -1,7 +1,7 @@
-import { ProductWithCounter } from "../../../entities/product";
+import { ProductCounter } from "../../../entities/product";
 import { graphql } from "../../../shared/api/gql";
 import { graphQLClient } from "../../../shared/api/graphQLClient";
-import { getTelegramObject } from "../../../entities/telegram";
+import { serverErrorHandler } from "../../../shared/api/serverErrorHandler";
 
 const createInvoiceUrlMutation = graphql(/* GraphQL */ `
   mutation CreateInvoiceLink($orderItemList: [OrderItem!]!) {
@@ -12,17 +12,16 @@ const createInvoiceUrlMutation = graphql(/* GraphQL */ `
   }
 `);
 
-export const createInvoiceUrl = (notEmpryProductWithCounterList: ProductWithCounter[]) => graphQLClient.request(
+export const createInvoiceUrl = (notEmpryProductCounterList: ProductCounter[]) => graphQLClient.request(
   createInvoiceUrlMutation,
   {
-    orderItemList: notEmpryProductWithCounterList
-      .map(productWithCounter => ({
-        counter: productWithCounter.counter,
-        productId: productWithCounter.data.id
+    orderItemList: notEmpryProductCounterList
+      .map(productCounter => ({
+        counter: productCounter.counter,
+        productId: productCounter.data.id
       }))
   }
 )
   .catch(e => {
-    console.error(e);
-    getTelegramObject().WebApp.showPopup({ message: 'Server error' });
+    serverErrorHandler(e);
   });

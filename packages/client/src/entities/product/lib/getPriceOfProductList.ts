@@ -1,4 +1,5 @@
-import { ProductWithCounter } from "../model/Product";
+import { ProductCounter } from "../model/Product";
 
 export const getPriceOfProductList =
-  (productWithCounterList: ProductWithCounter[]) => productWithCounterList.reduce((sum, { data, counter }) => sum + data.price * counter, 0)
+  (productCounterList: ProductCounter[]) =>
+    productCounterList.reduce((sum, { data, counter }) => sum + data.price * counter, 0)

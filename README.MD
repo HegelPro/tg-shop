@@ -4,6 +4,8 @@ Telegram bot where you can buy goods using graphic interface.
 
 You can try it by link --> [Telegram store bot](https://t.me/hegeltest_bot)
 
+Board of the project --> [Telegram store project board](https://github.com/users/HegelPro/projects/4)
+
 ## Client
 
 ### Strong sides

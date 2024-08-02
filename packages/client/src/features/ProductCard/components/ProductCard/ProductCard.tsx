@@ -1,52 +1,58 @@
 import { useCallback, useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import { ProductWithCounter } from '../../../../entities/product';
+import { ProductCounter } from '../../../../entities/product';
 import { ProductCardModal } from './components/ProductCardModal';
 import './ProductCard.css'
-import { getTelegramObject } from '../../../../entities/telegram';
+import { pipe } from 'fp-ts/lib/function';
+import { decreamentProductCounter, increamentProductCounter } from '../../../../entities/product/model/Product';
+import { getTelegramObject } from '../../../../shared/lib/getTelegramObject';
 
 interface ProductCardProps {
-    productWithCounter: ProductWithCounter
-    increament: () => void;
-    decreament: () => void;
+    productCounter: ProductCounter
+    setProductCounterList: React.Dispatch<React.SetStateAction<ProductCounter[]>>
 }
 export const ProductCard = ({
-    productWithCounter,
-    increament,
-    decreament
+    productCounter,
+    setProductCounterList,
 }: ProductCardProps) => {
     const [modalIsOpen, setIsOpen] = useState(false);
     const openModalHandler = useCallback(() => setIsOpen(true), [])
     const closeModalHandler = useCallback(() => setIsOpen(false), [])
 
     useEffect(() => {
-        if (productWithCounter.counter === productWithCounter.data.numberOfproduct) {
-            getTelegramObject().WebApp.showPopup({ message: `You choose maximum amount of ${productWithCounter.data.name} products` })
+        if (productCounter.counter === productCounter.data.numberOfproduct) {
+            getTelegramObject().WebApp.showPopup({ message: `You choose maximum amount of ${productCounter.data.name} products` })
         }
-    }, [productWithCounter])
+    }, [productCounter])
 
     return (
         <>
             <div className='shopItem'>
                 <div className='shopItem__info' onClick={openModalHandler}>
                     <div className='shopItem__imageContainer'>
-                        <img className='pure-img shopItem__image' src={productWithCounter.data.image} />
-                        {productWithCounter.counter > 0 && <div className='shopItem__counter'>{productWithCounter.counter}</div>}
+                        <img className='pure-img shopItem__image' src={productCounter.data.image} />
+                        {productCounter.counter > 0 && <div className='shopItem__counter'>{productCounter.counter}</div>}
                     </div>
-                    <h2 className='shopItem__title'>{productWithCounter.data.name}</h2>
-                    <p>{productWithCounter.data.price} {productWithCounter.data.currency}</p>
+                    <h2 className='shopItem__title'>{productCounter.data.name}</h2>
+                    <p>{productCounter.data.price} {productCounter.data.currency}</p>
                 </div>
 
                 <div className='shopItem__actionBtns'>
                     <button
                         className='pure-button pure-button-primary shopItem__btn'
-                        disabled={productWithCounter.counter <= 0}
-                        onClick={decreament}
+                        disabled={productCounter.counter <= 0}
+                        onClick={() => pipe(
+                            decreamentProductCounter(productCounter),
+                            setProductCounterList
+                        )}
                     >-</button>
                     <button
                         className='pure-button pure-button-primary shopItem__btn ml'
-                        disabled={productWithCounter.counter >= productWithCounter.data.numberOfproduct}
-                        onClick={increament}
+                        disabled={productCounter.counter >= productCounter.data.numberOfproduct}
+                        onClick={() => pipe(
+                            increamentProductCounter(productCounter),
+                            setProductCounterList
+                        )}
                     >+</button>
                 </div>
             </div>
@@ -58,7 +64,7 @@ export const ProductCard = ({
             >
                 <ProductCardModal
                     onClose={closeModalHandler}
-                    productWithCounter={productWithCounter}
+                    productCounter={productCounter}
                 />
             </Modal>
         </>

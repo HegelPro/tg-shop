@@ -1,15 +1,15 @@
 import { Product } from "@prisma/client";
 import { Bot } from "grammy";
 
-interface WithCounter<T> {
+interface Counter<T> {
     data: T
     counter: number
 }
 
-export const createInvoiceLink = async (bot: Bot, payload: string, productWithCounterList: WithCounter<Product>[]) => {
-    const prices = productWithCounterList.map(productWithCounter => ({
-        label: `${productWithCounter.data.name} x ${productWithCounter.counter}`,
-        amount: productWithCounter.counter * productWithCounter.data.price * 100
+export const createInvoiceLink = async (bot: Bot, payload: string, productCounterList: Counter<Product>[]) => {
+    const prices = productCounterList.map(productCounter => ({
+        label: `${productCounter.data.name} x ${productCounter.counter}`,
+        amount: productCounter.counter * productCounter.data.price * 100
     }))
     
     console.log("Prices:", prices);

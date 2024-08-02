@@ -1,15 +1,15 @@
-import { ProductWithCounter } from '../../model/Product';
+import { ProductCounter } from '../../model/Product';
 import './ProductLine.css'
 
 interface ProductLineProps {
-  productWithCounter: ProductWithCounter
+  productCounter: ProductCounter
 }
-export const ProductLine = ({productWithCounter}: ProductLineProps) => (
+export const ProductLine = ({productCounter}: ProductLineProps) => (
   <div className='orderItem'>
-    <img className='orderItem__image' src={productWithCounter.data.image}/>
-    <p className='ml'>{productWithCounter.data.name}</p>
+    <img className='orderItem__image' src={productCounter.data.image}/>
+    <p className='ml'>{productCounter.data.name}</p>
     <div className='ml'>
-      <p>{productWithCounter.counter} x {productWithCounter.data.price} {productWithCounter.data.currency}</p>
+      <p>{productCounter.counter} x {productCounter.data.price} {productCounter.data.currency}</p>
     </div>
   </div>
 );

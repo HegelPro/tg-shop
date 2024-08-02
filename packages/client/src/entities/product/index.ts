@@ -1,5 +1,5 @@
 export {ProductStoreProvider, useProductStore} from './ProductStoreContext';
-export type {ProductWithCounter} from './model/Product';
+export type {ProductCounter} from './model/Product';
 export {ProductLine} from './ui/ProductLine/ProductLine';
-export {getNotEmptyProductWithCounterList} from './lib/getNotEmptyProductWithCounterList'
+export {getNotEmptyProductCounterList} from './lib/getNotEmptyProductCounterList'
 export {getPriceOfProductList} from './lib/getPriceOfProductList'

@@ -1,73 +1,61 @@
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { emptyFunction } from "../../shared/lib/placeholders";
 import { getProductList } from "./api/getProductListQuery";
-import { ProductWithCounter } from "./model/Product";
-import { getNotEmptyProductWithCounterList } from "./lib/getNotEmptyProductWithCounterList";
+import { ProductCounter } from "./model/Product";
+import { getNotEmptyProductCounterList } from "./lib/getNotEmptyProductCounterList";
 import { getPriceOfProductList } from "./lib/getPriceOfProductList";
+import { wrapCounter } from "../../shared/lib/counter";
 
 interface ProductStore {
-  productWithCounterList: ProductWithCounter[]
-  notEmptyProductWithCounterList: ProductWithCounter[]
+  productCounterList: ProductCounter[]
+  setProductCounterList: React.Dispatch<React.SetStateAction<ProductCounter[]>>
+  notEmptyProductCounterList: ProductCounter[]
   priceOfProductList: number
-  changeCounterByProductId: (id: number, value: number) => void
-  increamentCounterByProductId: (id: number) => void
-  decreamentCounterByProductId: (id: number) => void
-  refetchProductWithCounterList: () => void
+  refetchProductCounterList: () => void
 }
 
 const ProductStoreContext = createContext<ProductStore>({
-  productWithCounterList: [],
-  notEmptyProductWithCounterList: [],
+  productCounterList: [],
+  notEmptyProductCounterList: [],
   priceOfProductList: 0,
-  refetchProductWithCounterList: emptyFunction,
-  changeCounterByProductId: emptyFunction,
-  increamentCounterByProductId: emptyFunction,
-  decreamentCounterByProductId: emptyFunction
+  setProductCounterList: emptyFunction,
+  refetchProductCounterList: emptyFunction,
 })
 
 export const ProductStoreProvider = ({ children }: PropsWithChildren) => {
-  const [productWithCounterList, setProductWithCounterList] = useState<ProductWithCounter[]>([]);
-  const changeCounterByProductId = useCallback((id: number, value: number) => {
-    setProductWithCounterList(
-      productWithCounterList.map(productWithCounter => productWithCounter.data.id === id
-        ? { data: productWithCounter.data, counter: productWithCounter.counter + value }
-        : productWithCounter
-      )
-    );
-  }, [productWithCounterList])
-  const increamentCounterByProductId = useCallback((id: number) => changeCounterByProductId(id, 1), [changeCounterByProductId]);
-  const decreamentCounterByProductId = useCallback((id: number) => changeCounterByProductId(id, -1), [changeCounterByProductId]);
+  const [productCounterList, setProductCounterList] = useState<ProductCounter[]>([]);
 
-  const refetchProductWithCounterList = useCallback(() => {
-    getProductList().then(productWithCounterList => {
-      setProductWithCounterList(productWithCounterList)
+  const refetchProductCounterList = useCallback(() => {
+    getProductList().then(productList => {
+      setProductCounterList(productList.map(wrapCounter))
     })
   }, [])
 
-  useEffect(() => { refetchProductWithCounterList() }, [refetchProductWithCounterList]);
+  useEffect(() => { refetchProductCounterList() }, [refetchProductCounterList]);
 
-  const notEmptyProductWithCounterList = useMemo(
-    () => getNotEmptyProductWithCounterList(productWithCounterList),
-    [productWithCounterList]
+  const notEmptyProductCounterList = useMemo(
+    () => getNotEmptyProductCounterList(productCounterList),
+    [productCounterList]
   )
 
   const priceOfProductList = useMemo(
-    () => getPriceOfProductList(notEmptyProductWithCounterList),
-    [notEmptyProductWithCounterList]
+    () => getPriceOfProductList(notEmptyProductCounterList),
+    [notEmptyProductCounterList]
   )
 
   return (
-    <ProductStoreContext.Provider value={{
-      productWithCounterList,
-      notEmptyProductWithCounterList,
+    <ProductStoreContext.Provider
+      value= {{
+        productCounterList,
+        notEmptyProductCounterList,
       priceOfProductList,
-      changeCounterByProductId,
-      increamentCounterByProductId,
-      decreamentCounterByProductId,
-      refetchProductWithCounterList
-    }}>
-      {children}
-    </ProductStoreContext.Provider>
+      setProductCounterList,
+      refetchProductCounterList
+  }
+}
+    >
+  { children }
+  </ProductStoreContext.Provider>
   )
 }
 export const useProductStore = () => useContext(ProductStoreContext)

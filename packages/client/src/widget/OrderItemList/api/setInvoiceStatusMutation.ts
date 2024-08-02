@@ -1,6 +1,6 @@
 import { graphql } from "../../../shared/api/gql";
 import { graphQLClient } from "../../../shared/api/graphQLClient";
-import { getTelegramObject } from "../../../entities/telegram";
+import { serverErrorHandler } from "../../../shared/api/serverErrorHandler";
 
 const setInvoiceStatusMutation = graphql(/* GraphQL */ `
   mutation SetInvoiceStatus($orderId: Int!, $invoiceStatus: String!) { 
@@ -22,6 +22,5 @@ export const setInvoiceStatus = ({
   }
 )
   .catch(e => {
-    console.error(e);
-    getTelegramObject().WebApp.showPopup({ message: 'Server error' });
+    serverErrorHandler(e);
   })

@@ -1,32 +1,34 @@
 import { useCallback, useEffect, useState } from "react";
 import { useProductStore } from "../../../../entities/product";
 import { ProductLine } from "../../../../entities/product";
-import { getTelegramObject } from "../../../../entities/telegram";
 import { useNavigate } from "react-router-dom";
 import { createInvoiceUrl } from "../../api/createInvoiceUrlMutation";
 import { setInvoiceStatus } from "../../api/setInvoiceStatusMutation";
-import { useMainButton, useBackButton } from "../../../../entities/telegram";
+import { routingPaths } from "../../../../shared/config/routingPaths";
+import { getTelegramObject } from "../../../../shared/lib/getTelegramObject";
+import { useMainButton } from "../../../../shared/hooks/useMainButton";
+import { useBackButton } from "../../../../shared/hooks/useBackButton";
 
 export const OrderItemList = () => {
   const navigate = useNavigate();
 
   const toProductPage = useCallback(() => {
-    navigate('/')
+    navigate(routingPaths.ProductListPage)
   }, [navigate])
 
-  const { notEmptyProductWithCounterList, priceOfProductList, refetchProductWithCounterList } = useProductStore()
+  const { notEmptyProductCounterList, priceOfProductList, refetchProductCounterList } = useProductStore()
 
   const [orderId, setOrderId] = useState<number | undefined>();
 
   const onPayHandler = useCallback(() => {
-    createInvoiceUrl(notEmptyProductWithCounterList)
+    createInvoiceUrl(notEmptyProductCounterList)
       .then(data => {
         if (!data) return;
         getTelegramObject().WebApp.openInvoice(data.createInvoiceLink.invoiceUrl)
         setOrderId(data.createInvoiceLink.orderId)
       })
 
-  }, [notEmptyProductWithCounterList])
+  }, [notEmptyProductCounterList])
 
   const text = `Оплатить: ${priceOfProductList} рублей`;
 
@@ -41,45 +43,45 @@ export const OrderItemList = () => {
   })
 
 
-  const setInvoiceStatusHandler = useCallback((invoiceStatus: string, onLoad: () => void) => {
+  const setInvoiceStatusHandler = useCallback((invoiceStatus: string) => {
     if (!orderId) return;
     setInvoiceStatus({
       invoiceStatus,
       orderId
     })
-      .then(onLoad)
   }, [orderId])
 
   useEffect(() => {
     const invoiceClosedHandler = (data: { status: 'paid' | 'cancelled' | 'failed' | 'pending' }) => {
       if (data.status === 'paid') {
-        setInvoiceStatusHandler(data.status, refetchProductWithCounterList)
+        setInvoiceStatusHandler(data.status)
         getTelegramObject().WebApp.showPopup({ message: 'invoice was paid successfully' })
       } else if (data.status === 'cancelled') {
-        setInvoiceStatusHandler(data.status, refetchProductWithCounterList)
-        getTelegramObject().WebApp.showPopup({ message: 'user closed this invoice without paying' })
+        setInvoiceStatusHandler(data.status)
+        navigate(routingPaths.ErrorPage)
+        // getTelegramObject().WebApp.showPopup({ message: 'user closed this invoice without paying' })
       } else if (data.status === 'failed') {
-        setInvoiceStatusHandler(data.status, refetchProductWithCounterList)
-        getTelegramObject().WebApp.showPopup({ message: 'Произошла ошибка при оплате заказа' })
+        setInvoiceStatusHandler(data.status)
+        navigate(routingPaths.ErrorPage)
+        // getTelegramObject().WebApp.showPopup({ message: 'Произошла ошибка при оплате заказа' })
       } else if (data.status === 'pending') {
-        setInvoiceStatusHandler(data.status, refetchProductWithCounterList)
-        getTelegramObject().WebApp.showPopup({ message: 'the payment is still processing. The bot will receive a service message about a successful payment when the payment is successfully paid' })
+        setInvoiceStatusHandler(data.status)
+        navigate(routingPaths.ErrorPage)
+        // getTelegramObject().WebApp.showPopup({ message: 'the payment is still processing. The bot will receive a service message about a successful payment when the payment is successfully paid' })
       }
     };
 
     getTelegramObject().WebApp.onEvent('invoiceClosed', invoiceClosedHandler);
     return () => { getTelegramObject().WebApp.offEvent('invoiceClosed', invoiceClosedHandler) }
-  }, [refetchProductWithCounterList, setInvoiceStatusHandler])
+  }, [navigate, refetchProductCounterList, setInvoiceStatusHandler])
 
   return (
     <div>
-      <div>
-        {notEmptyProductWithCounterList
-          .map((productWithCounter) => (
-            <ProductLine key={productWithCounter.data.id} productWithCounter={productWithCounter} />
-          ))
-        }
-      </div>
+      {notEmptyProductCounterList
+        .map((productCounter) => (
+          <ProductLine key={productCounter.data.id} productCounter={productCounter} />
+        ))
+      }
     </div>
   );
 }
