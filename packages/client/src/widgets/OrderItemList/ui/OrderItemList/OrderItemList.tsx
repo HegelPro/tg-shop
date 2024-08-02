@@ -19,7 +19,6 @@ export const OrderItemList = () => {
   const {
     notEmptyProductCounterList,
     priceOfProductList,
-    refetchProductCounterList,
   } = useProductStore();
 
   const [orderId, setOrderId] = useState<number | undefined>();
@@ -76,7 +75,7 @@ export const OrderItemList = () => {
         invoiceClosedHandler
       );
     };
-  }, [navigate, refetchProductCounterList, setInvoiceStatusHandler]);
+  }, [navigate, setInvoiceStatusHandler]);
 
   return (
     <MainButtonProvider show text={text} onClick={onPayHandler}>

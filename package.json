@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "https://magenta-manatee-dc5dd7.netlify.app/ - site",
   "main": "./server/dist/server.js",
-  "workspaces": [
-    "./packages/client",
-    "./packages/server"
-  ],
   "scripts": {
     "build:client": "npm run build --prefix=packages/client",
     "build:server": "npm run build --prefix=packages/server",

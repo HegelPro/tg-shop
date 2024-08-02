@@ -1,4 +1,5 @@
 **/*.svg
 **/*.css
+
 src/global.d.ts
-src/gql/*
+src/shared/api/gql/*
