@@ -1,1 +1,0 @@
-export {OrderItemList} from './components/OrderItemList/OrderItemList';

@@ -6,17 +6,23 @@ interface MainButton {
   hide(): MainButton;
 }
 function isMainButton(object: unknown): object is MainButton {
-  if(
-    typeof object === 'object' && object !== null
-    && 'setText' in object && typeof object.setText === 'function'
-    && 'onClick' in object && typeof object.onClick === 'function'
-    && 'offClick' in object && typeof object.offClick === 'function'
-    && 'show' in object && typeof object.show === 'function'
-    && 'hide' in object && typeof object.hide === 'function'
+  if (
+    typeof object === "object" &&
+    object !== null &&
+    "setText" in object &&
+    typeof object.setText === "function" &&
+    "onClick" in object &&
+    typeof object.onClick === "function" &&
+    "offClick" in object &&
+    typeof object.offClick === "function" &&
+    "show" in object &&
+    typeof object.show === "function" &&
+    "hide" in object &&
+    typeof object.hide === "function"
   ) {
-    return true
+    return true;
   }
-  return false
+  return false;
 }
 
 interface BackButton {
@@ -26,96 +32,125 @@ interface BackButton {
   hide(): BackButton;
 }
 function isBackButton(object: unknown): object is BackButton {
-  if(
-    typeof object === 'object' && object !== null
-    && 'onClick' in object && typeof object.onClick === 'function'
-    && 'offClick' in object && typeof object.offClick === 'function'
-    && 'show' in object && typeof object.show === 'function'
-    && 'hide' in object && typeof object.hide === 'function'
+  if (
+    typeof object === "object" &&
+    object !== null &&
+    "onClick" in object &&
+    typeof object.onClick === "function" &&
+    "offClick" in object &&
+    typeof object.offClick === "function" &&
+    "show" in object &&
+    typeof object.show === "function" &&
+    "hide" in object &&
+    typeof object.hide === "function"
   ) {
-    return true
+    return true;
   }
-  return false
+  return false;
 }
 
-type EventType = "themeChanged" | "viewportChanged" | "mainButtonClicked" | "invoiceClosed";
+type EventType =
+  | "themeChanged"
+  | "viewportChanged"
+  | "mainButtonClicked"
+  | "invoiceClosed";
 
 interface WebApp {
   ready(): void;
   openInvoice(invoice: string): void;
-  showPopup(data: {message: string}): void
-  onEvent(eventType: EventType, eventHandler: (data: { status: 'paid' | 'cancelled' | 'failed' | 'pending' }) => void): void;
-  offEvent(eventType: EventType, eventHandler: (data: { status: 'paid' | 'cancelled' | 'failed' | 'pending' }) => void): void;
-  MainButton: MainButton,
-  BackButton: BackButton
+  showPopup(data: { message: string }): void;
+  onEvent(
+    eventType: EventType,
+    eventHandler: (data: {
+      status: "paid" | "cancelled" | "failed" | "pending";
+    }) => void
+  ): void;
+  offEvent(
+    eventType: EventType,
+    eventHandler: (data: {
+      status: "paid" | "cancelled" | "failed" | "pending";
+    }) => void
+  ): void;
+  MainButton: MainButton;
+  BackButton: BackButton;
 }
 function isWebApp(object: unknown): object is WebApp {
-  if(
-    typeof object === 'object' && object !== null
-    && 'ready' in object && typeof object.ready === 'function'
-    && 'openInvoice' in object && typeof object.openInvoice === 'function'
-    && 'showPopup' in object && typeof object.showPopup === 'function'
-    && 'onEvent' in object && typeof object.onEvent === 'function'
-    && 'offEvent' in object && typeof object.offEvent === 'function'
-    && 'MainButton' in object && isMainButton(object.MainButton)
-    && 'BackButton' in object && isBackButton(object.BackButton)
+  if (
+    typeof object === "object" &&
+    object !== null &&
+    "ready" in object &&
+    typeof object.ready === "function" &&
+    "openInvoice" in object &&
+    typeof object.openInvoice === "function" &&
+    "showPopup" in object &&
+    typeof object.showPopup === "function" &&
+    "onEvent" in object &&
+    typeof object.onEvent === "function" &&
+    "offEvent" in object &&
+    typeof object.offEvent === "function" &&
+    "MainButton" in object &&
+    isMainButton(object.MainButton) &&
+    "BackButton" in object &&
+    isBackButton(object.BackButton)
   ) {
-    return true
+    return true;
   }
-  return false
+  return false;
 }
-
 
 interface TelegramObject {
-  WebApp: WebApp
+  WebApp: WebApp;
 }
 function isTelegramObject(object: unknown): object is TelegramObject {
-  if(
-    typeof object === 'object' && object !== null
-    && 'WebApp' in object && isWebApp(object.WebApp)
+  if (
+    typeof object === "object" &&
+    object !== null &&
+    "WebApp" in object &&
+    isWebApp(object.WebApp)
   ) {
-    return true
+    return true;
   }
-  return false
+  return false;
 }
 
-const GLOBAL_TELEGRAM_OBJECT = isTelegramObject(Telegram) ? Telegram : undefined
+const GLOBAL_TELEGRAM_OBJECT = isTelegramObject(Telegram)
+  ? Telegram
+  : undefined;
 const mockBackButton: BackButton = {
   show: () => mockBackButton,
   hide: () => mockBackButton,
   onClick: () => mockBackButton,
-  offClick: () => mockBackButton
-}
+  offClick: () => mockBackButton,
+};
 const mockMainButton: MainButton = {
   setText: () => mockMainButton,
   show: () => mockMainButton,
   hide: () => mockMainButton,
   onClick: () => mockMainButton,
-  offClick: () => mockMainButton
-}
+  offClick: () => mockMainButton,
+};
 const mockTelegramObject: TelegramObject = {
   WebApp: {
     BackButton: mockBackButton,
     MainButton: mockMainButton,
     ready: () => undefined,
     openInvoice: (invoice: string) => alert(`invoice: ${invoice}`),
-    showPopup({message}: {message: string}) {
+    showPopup({ message }: { message: string }) {
       alert(message);
     },
     onEvent(eventType: EventType) {
-      alert(eventType); 
+      alert(eventType);
     },
     offEvent(eventType: EventType) {
-      alert(eventType); 
+      alert(eventType);
     },
-  }
-}
+  },
+};
 
 export function getTelegramObject(): TelegramObject {
-  if(GLOBAL_TELEGRAM_OBJECT) {
-    return GLOBAL_TELEGRAM_OBJECT
+  if (GLOBAL_TELEGRAM_OBJECT) {
+    return GLOBAL_TELEGRAM_OBJECT;
   }
 
-  return mockTelegramObject
+  return mockTelegramObject;
 }
-

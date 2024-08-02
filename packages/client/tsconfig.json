@@ -15,10 +15,16 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    // "types": "src/app/global.d.ts"
+    "baseUrl": "./src",
+    "paths": {
+      "app/*": ["app/*"],
+      "entities/*": ["entities/*"],
+      "features/*": ["features/*"],
+      "pages/*": ["pages/*"],
+      "shared/*": ["shared/*"],
+      "widgets/*": ["widgets/*"]
+    }
   },
-  // "files": ["src/global.d.ts"],
   "include": ["src"],
-  // "exclude": ["./src/app/global.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

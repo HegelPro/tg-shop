@@ -1,1 +1,3 @@
-export const emptyFunction = () => {return}
+export const emptyFunction = () => {
+  return;
+};
