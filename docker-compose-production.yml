@@ -3,6 +3,7 @@ services:
   tg-store-bot:
     container_name: tg-store-bot
     restart: always
+    build: .
     volumes:
       - './packages/client/src:/app/packages/client/src'
       - './packages/server/src:/app/packages/server/src'
