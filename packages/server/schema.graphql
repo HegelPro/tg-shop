@@ -14,7 +14,6 @@ type InvoiceUrlResult {
 
 type Mutation {
   createInvoiceLink(orderItemList: [OrderItem!]!): InvoiceUrlResult!
-  setInvoiceStatus(invoiceStatus: String!, orderId: Int!): String!
 }
 
 input OrderItem {
