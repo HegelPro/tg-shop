@@ -9,9 +9,9 @@
 
 ## Сценарий покупки товаров при помощи Telegram бота
 
-![Выбор товаров в магазине](https://github.com/HegelPro/tg-store/images/select-products.jpg "Выбор товаров в магазине")
-![Проверка списка выбраных товаров](https://github.com/HegelPro/tg-store/images/check-product-list.jpg "Проверка списка выбраных товаров")
-![Оплата товаров в мессенджере Telegram](https://github.com/HegelPro/tg-store/images/telegram-pay.jpg "Оплата товаров в мессенджере Telegram")
+![Выбор товаров в магазине](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/select-products.jpg "Выбор товаров в магазине")
+![Проверка списка выбраных товаров](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/check-product-list.jpg "Проверка списка выбраных товаров")
+![Оплата товаров в мессенджере Telegram](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/telegram-pay.jpg "Оплата товаров в мессенджере Telegram")
 
 
 ## Архитектура приложения
