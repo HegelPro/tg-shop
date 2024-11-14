@@ -1,53 +1,17 @@
-interface MainButton {
-  setText(text: string): MainButton;
-  onClick(callback: () => void): MainButton;
-  offClick(callback: () => void): MainButton;
-  show(): MainButton;
-  hide(): MainButton;
-}
-function isMainButton(object: unknown): object is MainButton {
-  if (
-    typeof object === "object" &&
-    object !== null &&
-    "setText" in object &&
-    typeof object.setText === "function" &&
-    "onClick" in object &&
-    typeof object.onClick === "function" &&
-    "offClick" in object &&
-    typeof object.offClick === "function" &&
-    "show" in object &&
-    typeof object.show === "function" &&
-    "hide" in object &&
-    typeof object.hide === "function"
-  ) {
-    return true;
-  }
-  return false;
-}
+import { pipe } from "fp-ts/lib/function";
+import * as T from "io-ts";
+import * as E from "fp-ts/Either";
 
-interface BackButton {
-  onClick(callback: () => void): BackButton;
-  offClick(callback: () => void): BackButton;
-  show(): BackButton;
-  hide(): BackButton;
-}
-function isBackButton(object: unknown): object is BackButton {
-  if (
-    typeof object === "object" &&
-    object !== null &&
-    "onClick" in object &&
-    typeof object.onClick === "function" &&
-    "offClick" in object &&
-    typeof object.offClick === "function" &&
-    "show" in object &&
-    typeof object.show === "function" &&
-    "hide" in object &&
-    typeof object.hide === "function"
-  ) {
-    return true;
-  }
-  return false;
-}
+const themeParams = T.type({
+  bg_color: T.union([T.string, T.undefined]),
+  text_color: T.union([T.string, T.undefined]),
+  hint_color: T.union([T.string, T.undefined]),
+  link_color: T.union([T.string, T.undefined]),
+  button_color: T.union([T.string, T.undefined]),
+  button_text_color: T.union([T.string, T.undefined]),
+  section_separator_color: T.union([T.string, T.undefined]),
+});
+type ThemeParams = T.TypeOf<typeof themeParams>;
 
 type EventType =
   | "themeChanged"
@@ -55,67 +19,93 @@ type EventType =
   | "mainButtonClicked"
   | "invoiceClosed";
 
-interface WebApp {
-  ready(): void;
-  openInvoice(invoice: string): void;
-  showPopup(data: { message: string }): void;
-  onEvent(
-    eventType: EventType,
-    eventHandler: (data: {
-      status: "paid" | "cancelled" | "failed" | "pending";
-    }) => void
-  ): void;
-  offEvent(
-    eventType: EventType,
-    eventHandler: (data: {
-      status: "paid" | "cancelled" | "failed" | "pending";
-    }) => void
-  ): void;
-  MainButton: MainButton;
-  BackButton: BackButton;
-}
-function isWebApp(object: unknown): object is WebApp {
-  if (
-    typeof object === "object" &&
-    object !== null &&
-    "ready" in object &&
-    typeof object.ready === "function" &&
-    "openInvoice" in object &&
-    typeof object.openInvoice === "function" &&
-    "showPopup" in object &&
-    typeof object.showPopup === "function" &&
-    "onEvent" in object &&
-    typeof object.onEvent === "function" &&
-    "offEvent" in object &&
-    typeof object.offEvent === "function" &&
-    "MainButton" in object &&
-    isMainButton(object.MainButton) &&
-    "BackButton" in object &&
-    isBackButton(object.BackButton)
-  ) {
-    return true;
-  }
-  return false;
+const mainButton = T.type({
+  setText: T.Function,
+  onClick: T.Function,
+  offClick: T.Function,
+  show: T.Function,
+  hide: T.Function,
+});
+interface MainButton extends T.TypeOf<typeof mainButton> {
+  setText: (text: string) => void;
+  onClick: (callback: () => void) => void;
+  offClick: (callback: () => void) => void;
+  show: () => void;
+  hide: () => void;
 }
 
-interface TelegramObject {
-  WebApp: WebApp;
-}
-function isTelegramObject(object: unknown): object is TelegramObject {
-  if (
-    typeof object === "object" &&
-    object !== null &&
-    "WebApp" in object &&
-    isWebApp(object.WebApp)
-  ) {
-    return true;
-  }
-  return false;
+const backButton = T.type({
+  onClick: T.Function,
+  offClick: T.Function,
+  show: T.Function,
+  hide: T.Function,
+});
+interface BackButton extends T.TypeOf<typeof backButton> {
+  onClick: (callback: () => void) => void;
+  offClick: (callback: () => void) => void;
+  show: () => void;
+  hide: () => void;
 }
 
-const GLOBAL_TELEGRAM_OBJECT = isTelegramObject(Telegram)
-  ? Telegram
-  : undefined;
+const user = T.union([
+  T.type({
+    id: T.union([T.number, T.undefined]),
+    // is_bot: T.boolean,
+    is_bot: T.union([T.boolean, T.undefined]),
+    // first_name: T.string,
+    first_name: T.union([T.string, T.undefined]),
+    last_name: T.union([T.string, T.undefined]),
+    username: T.union([T.string, T.undefined]),
+    language_code: T.union([T.string, T.undefined]),
+  }),
+  T.undefined,
+]);
+type User = T.TypeOf<typeof user>;
+
+const telegramObject = T.type({
+  WebApp: T.type({
+    close: T.Function,
+    expand: T.Function,
+    ready: T.Function,
+    openInvoice: T.Function,
+    showPopup: T.Function,
+    onEvent: T.Function,
+    offEvent: T.Function,
+    MainButton: mainButton,
+    BackButton: backButton,
+    initDataUnsafe: T.type({
+      user,
+    }),
+  }),
+});
+interface TelegramObject extends T.TypeOf<typeof telegramObject> {
+  WebApp: {
+    close: () => void;
+    expand: () => void;
+    ready: () => void;
+    openInvoice: (invoice: string) => void;
+    showPopup: (data: { message: string }) => void;
+    onEvent: (
+      eventType: EventType,
+      eventHandler: (data: {
+        status: "paid" | "cancelled" | "failed" | "pending";
+      }) => void
+    ) => void;
+    offEvent: (
+      eventType: EventType,
+      eventHandler: (data: {
+        status: "paid" | "cancelled" | "failed" | "pending";
+      }) => void
+    ) => void;
+    MainButton: MainButton;
+    BackButton: BackButton;
+    themeParams: ThemeParams;
+    initDataUnsafe: {
+      user: User;
+    };
+  };
+}
+
 const mockBackButton: BackButton = {
   show: () => mockBackButton,
   hide: () => mockBackButton,
@@ -134,6 +124,8 @@ const mockTelegramObject: TelegramObject = {
     BackButton: mockBackButton,
     MainButton: mockMainButton,
     ready: () => undefined,
+    close: () => undefined,
+    expand: () => undefined,
     openInvoice: (invoice: string) => alert(`invoice: ${invoice}`),
     showPopup({ message }: { message: string }) {
       alert(message);
@@ -144,13 +136,48 @@ const mockTelegramObject: TelegramObject = {
     offEvent(eventType: EventType) {
       alert(eventType);
     },
+    themeParams: {
+      bg_color: undefined,
+      hint_color: undefined,
+      link_color: undefined,
+      text_color: undefined,
+      button_color: undefined,
+      button_text_color: undefined,
+      section_separator_color: undefined,
+    },
+    initDataUnsafe: {
+      user: {
+        id: 0,
+        first_name: "",
+        last_name: undefined,
+        language_code: undefined,
+        username: undefined,
+        is_bot: false,
+      },
+    },
   },
 };
 
 export function getTelegramObject(): TelegramObject {
-  if (GLOBAL_TELEGRAM_OBJECT) {
-    return GLOBAL_TELEGRAM_OBJECT;
-  }
-
-  return mockTelegramObject;
+  // (Telegram as any).WebApp.showPopup({
+  //   message: 'JSON.stringify("Hello")',
+  // });
+  // (Telegram as any).WebApp.showPopup({
+  //   message: JSON.stringify((Telegram as any)?.initData),
+  // });
+  // (Telegram as any).WebApp.showPopup({
+  //   message: JSON.stringify((Telegram as any)?.initDataUnsafe?.user),
+  // });
+  // (Telegram as any).WebApp.showPopup({
+  //   message: JSON.stringify((Telegram as any)?.initDataUnsafe),
+  // });
+  // console.log();
+  const eithertelegramObject = telegramObject.decode(Telegram) as E.Either<
+    T.Errors,
+    TelegramObject
+  >;
+  return pipe(
+    eithertelegramObject,
+    E.getOrElse(() => mockTelegramObject)
+  );
 }

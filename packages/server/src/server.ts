@@ -26,6 +26,8 @@ const key = readFileSync(process.env?.CERTIFICATE_KEY_PATH || '', 'utf8');
 const cert = readFileSync(process.env?.CERTIFICATE_CERT_PATH || '', 'utf8');
 const ca = readFileSync(process.env?.CERTIFICATE_CHAIN_PATH || '', 'utf8');
 
+console.log('ca:', ca)
+
 const app = fastify({ logger: true, https: {
   key,
   cert,
@@ -38,7 +40,7 @@ const SERVER_PORT = Number.parseInt(process.env?.SERVER_PORT || '4000')
 const FRONTEND_PATH = path.dirname(require.resolve("hegel-tg-store-client"))
 
 app.register(fastifyStatic, {
-  root: FRONTEND_PATH,
+  root: FRONTEND_PATH
 })
 
 app.route({

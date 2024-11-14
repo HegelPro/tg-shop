@@ -1,14 +1,13 @@
+export { ProductCategoryFilter } from "./ui/ProductCategoryFilter/ProductCategoryFilter";
 export {
   ProductStoreProvider,
   useProductStore,
 } from "./context/ProductStoreContext";
-export { type ProductQueryType } from "./model/product";
+export { type Product } from "./model/product";
 export { type ProductCounter } from "./model/productCounter";
 export {
-  increamentProductCounter,
-  decreamentProductCounter,
+  addProduct,
+  removeProduct,
   getPriceOfProductList,
-  getNotEmptyProductCounterList,
 } from "./model/productCounterList";
-export { ProductLine } from "./ui/ProductLine/ProductLine";
 export { getProductList } from "./api/getProductList";

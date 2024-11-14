@@ -3,7 +3,11 @@ services:
   tg-store-bot:
     container_name: tg-store-bot
     restart: always
+    build: .
+    command: >
+      sh -c "npm run start:prod"
     volumes:
+      - './packages/client/public:/app/packages/client/public'
       - './packages/client/src:/app/packages/client/src'
       - './packages/server/src:/app/packages/server/src'
       - './packages/server/prisma:/app/packages/server/prisma'
@@ -18,9 +22,11 @@ services:
     depends_on:
       - db-store
   db-store:
-    container_name: db-store
     image: postgres
+    container_name: db-store
     restart: always
+    volumes:
+      - ~/Documents/postgres-data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     env_file:

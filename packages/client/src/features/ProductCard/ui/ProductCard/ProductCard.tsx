@@ -1,96 +1,71 @@
-import { pipe } from "fp-ts/lib/function";
-import { memo, useCallback, useEffect, useState } from "react";
-import Modal from "react-modal";
-import { ProductCardModal } from "./components/ProductCardModal";
-import { ProductCounter } from "entities/product";
+import { memo, useCallback } from "react";
+import { Product, ProductCounter } from "entities/product";
+import { addProduct, removeProduct } from "entities/product";
 import {
-  decreamentProductCounter,
-  increamentProductCounter,
-} from "entities/product";
-import { getTelegramObject } from "shared/lib/getTelegramObject";
-import "./ProductCard.css";
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import { Add, Remove } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { routingPaths } from "shared/config/routingPaths";
+import { Price } from "shared/ui/Price/Price";
+import { Counter } from "shared/ui/Counter/Counter";
+
+const emptyImageUrl = "";
+const emptyImageAlt = "";
 
 interface ProductCardProps {
-  productCounter: ProductCounter;
+  product: Product;
+  counter?: number;
   setProductCounterList: React.Dispatch<React.SetStateAction<ProductCounter[]>>;
 }
 export const ProductCard = memo(
-  ({ productCounter, setProductCounterList }: ProductCardProps) => {
-    const [modalIsOpen, setIsOpen] = useState(false);
-    const openModalHandler = useCallback(() => setIsOpen(true), []);
-    const closeModalHandler = useCallback(() => setIsOpen(false), []);
+  ({ product, counter, setProductCounterList }: ProductCardProps) => {
+    const navigate = useNavigate();
+    const toProductList = useCallback(
+      () => navigate(`${routingPaths.ProductItemPage}/${product.id}`),
+      [navigate, product.id]
+    );
 
-    useEffect(() => {
-      if (productCounter.counter === productCounter.data.numberOfproduct) {
-        getTelegramObject().WebApp.showPopup({
-          message: `You choose maximum amount of ${productCounter.data.name} products`,
-        });
-      }
-    }, [productCounter]);
-    console.log("ProductCard render");
+    // useEffect(() => {
+    //   if (productCounter.counter === productCounter.data.numberOfproduct) {
+    //     getTelegramObject().WebApp.showPopup({
+    //       message: `You choose maximum amount of ${productCounter.data.name} products`,
+    //     });
+    //   }
+    // }, [productCounter]);
 
     return (
-      <>
-        <div className="shopItem">
-          <div className="shopItem__info" onClick={openModalHandler}>
-            <div className="shopItem__imageContainer">
-              <img
-                className="pure-img shopItem__image"
-                src={productCounter.data.image}
-              />
-              {productCounter.counter > 0 && (
-                <div className="shopItem__counter">
-                  {productCounter.counter}
-                </div>
-              )}
-            </div>
-            <h2 className="shopItem__title">{productCounter.data.name}</h2>
-            <p>
-              {productCounter.data.price} {productCounter.data.currency}
-            </p>
-          </div>
-
-          <div className="shopItem__actionBtns">
-            <button
-              className="pure-button pure-button-primary shopItem__btn"
-              disabled={productCounter.counter <= 0}
-              onClick={() =>
-                pipe(
-                  decreamentProductCounter(productCounter),
-                  setProductCounterList
-                )
-              }
-            >
-              -
-            </button>
-            <button
-              className="pure-button pure-button-primary shopItem__btn ml"
-              disabled={
-                productCounter.counter >= productCounter.data.numberOfproduct
-              }
-              onClick={() =>
-                pipe(
-                  increamentProductCounter(productCounter),
-                  setProductCounterList
-                )
-              }
-            >
-              +
-            </button>
-          </div>
-        </div>
-
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModalHandler}
-          contentLabel="Example Modal"
-        >
-          <ProductCardModal
-            onClose={closeModalHandler}
-            productCounter={productCounter}
+      <Card>
+        <CardActionArea onClick={toProductList}>
+          <CardHeader title={product.name} />
+          <CardMedia
+            component="img"
+            image={product.image || emptyImageUrl}
+            alt={product.image || emptyImageAlt}
           />
-        </Modal>
-      </>
+          <CardContent>
+            <Price
+              price={product.price}
+              discount={product.discountPrice || undefined}
+            />
+          </CardContent>
+        </CardActionArea>
+
+        <CardActions>
+          <Counter
+            counter={counter}
+            onAdd={() => setProductCounterList(addProduct(product))}
+            onRemove={() => setProductCounterList(removeProduct(product))}
+          />
+        </CardActions>
+      </Card>
     );
   }
 );

@@ -1,7 +1,7 @@
 import * as Eq from "fp-ts/Eq";
-import { ProductListQuery } from "shared/api/gql/graphql";
+import { ProductListWithCategoryFilterQuery, ProductQuery } from "shared/api/gql/graphql";
 
-export type ProductQueryType = ProductListQuery["productList"][0];
-export const eqProduct: Eq.Eq<ProductQueryType> = {
+export type Product = ProductListWithCategoryFilterQuery['productListWithCategoryFilter'][0] | ProductQuery['product'];
+export const eqProduct: Eq.Eq<Product> = {
   equals: (one, two) => one.id === two.id,
 };

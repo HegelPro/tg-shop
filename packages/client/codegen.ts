@@ -1,9 +1,8 @@
-
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: 'https://hegel-tg-store.ru/graphql',
+  schema: '../server/schema.graphql',
   documents: "src/**/*.ts",
   generates: {
     "src/shared/api/gql/": {

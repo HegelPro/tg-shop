@@ -4,7 +4,7 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 type Error {
-  message: String!
+  message: String
 }
 
 type InvoiceUrlResult {
@@ -13,7 +13,7 @@ type InvoiceUrlResult {
 }
 
 type Mutation {
-  createInvoiceLink(orderItemList: [OrderItem!]!): InvoiceUrlResult!
+  createInvoiceLink(orderItemList: [OrderItem!]!, telegramUserId: Int!): InvoiceUrlResult!
 }
 
 input OrderItem {
@@ -22,20 +22,25 @@ input OrderItem {
 }
 
 type Product {
-  currency: String!
   descrition: String
+  discountPrice: Float
   id: Int!
-  image: String!
+  image: String
   name: String!
-  numberOfproduct: Float!
   price: Float!
   productCategory: ProductCategory!
+  shortDescrition: String
 }
 
 type ProductCategory {
   id: Int!
+  pluralName: String!
+  singleName: String!
 }
 
 type Query {
+  product(productId: Int!): Product!
+  productCategoryList: [ProductCategory!]!
   productList: [Product!]!
+  productListWithCategoryFilter(productCategoryId: Int): [Product!]!
 }

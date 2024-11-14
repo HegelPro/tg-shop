@@ -14,10 +14,10 @@ datasource db {
 model Product {
   id                Int             @id @default(autoincrement())
   name              String          @unique
+  shortDescrition   String?
   descrition        String?
   price             Float
-  currency          String          @default("RUB")
-  numberOfproduct   Int             @default(0)
+  discountPrice     Float?
   image             String
   productCategory   ProductCategory @relation(fields: [productCategoryId], references: [id])
   productCategoryId Int
@@ -25,9 +25,10 @@ model Product {
 }
 
 model ProductCategory {
-  id      Int       @id @default(autoincrement())
-  name    String    @unique
-  product Product[]
+  id         Int       @id @default(autoincrement())
+  singleName String    @unique
+  pluralName String    @unique
+  product    Product[]
 }
 
 model OrderItem {
@@ -44,8 +45,6 @@ model Order {
   userData           UserData    @relation(fields: [userDataId], references: [id])
   userDataId         Int
   payload            String
-  currency           String      @default("RUB")
-  sumOfProductPrices Float
   orderStatus        OrderStatus @default(unpaid)
   orderItem          OrderItem[]
 }
@@ -62,11 +61,10 @@ enum OrderStatus {
 }
 
 model UserData {
-  id           Int     @id @default(autoincrement())
-  tgId         Int     @unique
+  id           Int     @id
   firstName    String
-  lastName     String
-  username     String
-  languageCode String
+  lastName     String?
+  username     String?
+  languageCode String?
   order        Order[]
 }

@@ -1,2 +1,2 @@
-schema: https://hegel-tg-store.ru/graphql
+schema: packages/server/schema.graphql
 documents: 'src/**/*.{graphql,js,ts,jsx,tsx}'

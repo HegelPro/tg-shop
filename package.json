@@ -5,6 +5,7 @@
   "main": "./server/dist/server.js",
   "scripts": {
     "build:client": "npm run build --prefix=packages/client",
+    "build:client:dev": "npm run build:dev --prefix=packages/client",
     "build:server": "npm run build --prefix=packages/server",
     "build": "npm run build:client && npm run build:server",
     "start:prod": "npm run build && npm run start --prefix=packages/server",

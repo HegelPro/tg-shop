@@ -1,8 +1,15 @@
-import { PropsWithChildren } from "react";
-import "./Layout.css";
+import { PropsWithChildren, ReactNode } from "react";
+import { Container, CssBaseline } from "@mui/material";
 
-export const Layout = ({ children }: PropsWithChildren) => (
-  <div>
-    <div className="layout__content">{children}</div>
-  </div>
+interface LayoutProps extends PropsWithChildren {
+  header?: ReactNode
+}
+export const Layout = ({ header, children }: LayoutProps) => (
+  <>
+    <CssBaseline />
+    {header}
+    <Container>
+      {children}
+    </Container>
+  </>
 );

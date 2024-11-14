@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "vite",
+    "build:dev": "npm -s run clean && npm run lint && tsc && vite build  --mode development",
     "build": "npm -s run clean && npm run lint && tsc && vite build",
     "clean": "rm -rf dist",
     "preview": "vite preview",
@@ -15,12 +16,17 @@
   "main": "./dist/index.html",
   "dependencies": {
     "@babel/preset-typescript": "^7.21.4",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.0.1",
+    "@mui/material": "^6.0.0",
     "fp-ts": "^2.16.9",
     "graphql": "^16.6.0",
     "graphql-request": "^5.1.0",
+    "io-ts": "^2.2.21",
+    "marked": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-modal": "^3.16.1",
     "react-router-dom": "^6.25.1"
   },
   "devDependencies": {

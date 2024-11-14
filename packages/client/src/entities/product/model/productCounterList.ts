@@ -1,26 +1,53 @@
-import { decrementCounter, incrementCounter } from "shared/lib/counter";
-import { eqProductCounter, ProductCounter } from "./productCounter";
+import {
+  decrementCounter,
+  incrementCounter,
+  wrapCounter,
+} from "shared/lib/counter";
+import { ProductCounter } from "./productCounter";
+import { Product } from "./product";
+import { pipe } from "fp-ts/lib/function";
 
 export const changeProductCounterListItem =
   (
-    productCounterOne: ProductCounter,
+    product: Product,
     mapper: (productCounter: ProductCounter) => ProductCounter
   ) =>
-  (productCounterList: ProductCounter[]): ProductCounter[] =>
-    productCounterList.map((productCounterTwo) =>
-      eqProductCounter.equals(productCounterOne, productCounterTwo)
-        ? mapper(productCounterTwo)
-        : productCounterTwo
+  (productIdCounterList: ProductCounter[]): ProductCounter[] =>
+    productIdCounterList.map((productIdCounter) =>
+      product.id === productIdCounter.data.id
+        ? mapper(productIdCounter)
+        : productIdCounter
     );
 
-export const increamentProductCounter = (productCounter: ProductCounter) =>
-  changeProductCounterListItem(productCounter, incrementCounter);
+export const addProduct =
+  (product: Product) =>
+  (productCounterList: ProductCounter[]): ProductCounter[] =>
+    productCounterList.find(
+      (productCounter) => productCounter.data.id === product.id
+    )
+      ? pipe(
+          productCounterList,
+          changeProductCounterListItem(product, incrementCounter)
+        )
+      : [...productCounterList, pipe(product, wrapCounter, incrementCounter)];
 
-export const decreamentProductCounter = (productCounter: ProductCounter) =>
-  changeProductCounterListItem(productCounter, decrementCounter);
-export const getNotEmptyProductCounterList = (
-  productCounterList: ProductCounter[]
-) => productCounterList.filter((productCounter) => productCounter.counter > 0);
+export const removeProduct =
+  (product: Product) =>
+  (productIdCounterList: ProductCounter[]): ProductCounter[] => {
+    const foundProductCounter = productIdCounterList.find(
+      (productIdCounter) => productIdCounter.data.id === product.id
+    );
+    return !foundProductCounter
+      ? productIdCounterList
+      : foundProductCounter.counter === 0
+      ? productIdCounterList.filter(
+          (productIdCounter) => productIdCounter.data.id !== product.id
+        )
+      : pipe(
+          productIdCounterList,
+          changeProductCounterListItem(product, decrementCounter)
+        );
+  };
 
 export const getPriceOfProductList = (productCounterList: ProductCounter[]) =>
   productCounterList.reduce(

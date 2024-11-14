@@ -16,7 +16,7 @@ export const builder = new SchemaBuilder<{
   }
 }>({
   plugins: [PrismaPlugin, ErrorsPlugin],
-  errorOptions: {
+  errors: {
     defaultTypes: [Error],
   },
   prisma: {

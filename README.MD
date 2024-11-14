@@ -1,6 +1,30 @@
 # Telegram store
 
-Telegram bot where you can buy goods using graphic interface.
+## Посмотреть приложение можно по ссылке:
+* [Telegram store bot](https://t.me/hegeltest_bot)
+
+## Что представляет собой приложение?
+
+Приложение служет для того, чтобы на его основе создавать интернет магазины с графическим интерфейсом внутри менеджера Telegram
+
+## Сценарий покупки товаров при помощи Telegram бота
+
+![Выбор товаров в магазине](https://github.com/HegelPro/tg-store/images/select-products.jpg "Выбор товаров в магазине")
+![Проверка списка выбраных товаров](https://github.com/HegelPro/tg-store/images/check-product-list.jpg "Проверка списка выбраных товаров")
+![Оплата товаров в мессенджере Telegram](https://github.com/HegelPro/tg-store/images/telegram-pay.jpg "Оплата товаров в мессенджере Telegram")
+
+
+## Архитектура приложения
+
+Исходный код распологается в монорепазитории, который содержен несколько приложений:
+* [Клиентское приложения]() - Статическое react приложение работающее внутри Telegram bot реализующее Telegram webapp api. 
+* [Серверное приложения]() - 
+
+## Как запустить приложение?
+
+
+
+Telegram bot where you can buy goods using web app telegram api(GUI).
 
 You can try it by link --> [Telegram store bot](https://t.me/hegeltest_bot)
 

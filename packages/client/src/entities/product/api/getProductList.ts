@@ -1,7 +1,7 @@
 import { graphql } from "shared/api/gql";
+import { ProductListQuery } from "shared/api/gql/graphql";
 import { graphQLClient } from "shared/api/graphQLClient";
 import { serverErrorHandler } from "shared/api/serverErrorHandler";
-import { ProductQueryType } from "../model/product";
 
 const getProductListQuery = graphql(/* GraphQL */ `
   query ProductList {
@@ -11,8 +11,7 @@ const getProductListQuery = graphql(/* GraphQL */ `
       id
       image
       price
-      currency
-      numberOfproduct
+      discountPrice
     }
   }
 `);
@@ -23,5 +22,5 @@ export const getProductList = () =>
     .then((data) => data.productList)
     .catch((e) => {
       serverErrorHandler(e);
-      return [] as ProductQueryType[];
+      return [] as ProductListQuery['productList'];
     });

@@ -1,3 +1,6 @@
 node_modules
 
 .env*
+
+packages/client/public/**.jpg
+packages/client/public/**.png

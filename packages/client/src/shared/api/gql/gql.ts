@@ -13,9 +13,11 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
-    "\n  query ProductList {\n    productList {\n      name\n      descrition\n      id\n      image\n      price\n      currency\n      numberOfproduct\n    }\n  }\n": types.ProductListDocument,
-    "\n  mutation CreateInvoiceLink($orderItemList: [OrderItem!]!) {\n    createInvoiceLink(orderItemList: $orderItemList) {\n      invoiceUrl\n      orderId\n    }\n  }\n": types.CreateInvoiceLinkDocument,
-    "\n  mutation SetInvoiceStatus($orderId: Int!, $invoiceStatus: String!) {\n    setInvoiceStatus(invoiceStatus: $invoiceStatus, orderId: $orderId)\n  }\n": types.SetInvoiceStatusDocument,
+    "\n  query Product($productId: Int!) {\n    product(productId: $productId) {\n      __typename\n      descrition\n      discountPrice\n      id\n      image\n      name\n      price\n      productCategory {\n        singleName\n      }\n    }\n  }\n": types.ProductDocument,
+    "\n  query ProductCategoryList {\n    productCategoryList {\n      id\n      pluralName\n      singleName\n    }\n  }\n": types.ProductCategoryListDocument,
+    "\n  query ProductList {\n    productList {\n      name\n      descrition\n      id\n      image\n      price\n      discountPrice\n    }\n  }\n": types.ProductListDocument,
+    "\n  query ProductListWithCategoryFilter($productCategoryId: Int) {\n    productListWithCategoryFilter(productCategoryId: $productCategoryId) {\n      name\n      descrition\n      id\n      image\n      price\n      discountPrice\n    }\n  }\n": types.ProductListWithCategoryFilterDocument,
+    "\n  mutation CreateInvoiceLink(\n    $telegramUserId: Int!\n    $orderItemList: [OrderItem!]!\n  ) {\n    createInvoiceLink(\n      telegramUserId: $telegramUserId\n      orderItemList: $orderItemList\n    ) {\n      invoiceUrl\n      orderId\n    }\n  }\n": types.CreateInvoiceLinkDocument,
 };
 
 /**
@@ -35,15 +37,23 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query ProductList {\n    productList {\n      name\n      descrition\n      id\n      image\n      price\n      currency\n      numberOfproduct\n    }\n  }\n"): (typeof documents)["\n  query ProductList {\n    productList {\n      name\n      descrition\n      id\n      image\n      price\n      currency\n      numberOfproduct\n    }\n  }\n"];
+export function graphql(source: "\n  query Product($productId: Int!) {\n    product(productId: $productId) {\n      __typename\n      descrition\n      discountPrice\n      id\n      image\n      name\n      price\n      productCategory {\n        singleName\n      }\n    }\n  }\n"): (typeof documents)["\n  query Product($productId: Int!) {\n    product(productId: $productId) {\n      __typename\n      descrition\n      discountPrice\n      id\n      image\n      name\n      price\n      productCategory {\n        singleName\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation CreateInvoiceLink($orderItemList: [OrderItem!]!) {\n    createInvoiceLink(orderItemList: $orderItemList) {\n      invoiceUrl\n      orderId\n    }\n  }\n"): (typeof documents)["\n  mutation CreateInvoiceLink($orderItemList: [OrderItem!]!) {\n    createInvoiceLink(orderItemList: $orderItemList) {\n      invoiceUrl\n      orderId\n    }\n  }\n"];
+export function graphql(source: "\n  query ProductCategoryList {\n    productCategoryList {\n      id\n      pluralName\n      singleName\n    }\n  }\n"): (typeof documents)["\n  query ProductCategoryList {\n    productCategoryList {\n      id\n      pluralName\n      singleName\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation SetInvoiceStatus($orderId: Int!, $invoiceStatus: String!) {\n    setInvoiceStatus(invoiceStatus: $invoiceStatus, orderId: $orderId)\n  }\n"): (typeof documents)["\n  mutation SetInvoiceStatus($orderId: Int!, $invoiceStatus: String!) {\n    setInvoiceStatus(invoiceStatus: $invoiceStatus, orderId: $orderId)\n  }\n"];
+export function graphql(source: "\n  query ProductList {\n    productList {\n      name\n      descrition\n      id\n      image\n      price\n      discountPrice\n    }\n  }\n"): (typeof documents)["\n  query ProductList {\n    productList {\n      name\n      descrition\n      id\n      image\n      price\n      discountPrice\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query ProductListWithCategoryFilter($productCategoryId: Int) {\n    productListWithCategoryFilter(productCategoryId: $productCategoryId) {\n      name\n      descrition\n      id\n      image\n      price\n      discountPrice\n    }\n  }\n"): (typeof documents)["\n  query ProductListWithCategoryFilter($productCategoryId: Int) {\n    productListWithCategoryFilter(productCategoryId: $productCategoryId) {\n      name\n      descrition\n      id\n      image\n      price\n      discountPrice\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateInvoiceLink(\n    $telegramUserId: Int!\n    $orderItemList: [OrderItem!]!\n  ) {\n    createInvoiceLink(\n      telegramUserId: $telegramUserId\n      orderItemList: $orderItemList\n    ) {\n      invoiceUrl\n      orderId\n    }\n  }\n"): (typeof documents)["\n  mutation CreateInvoiceLink(\n    $telegramUserId: Int!\n    $orderItemList: [OrderItem!]!\n  ) {\n    createInvoiceLink(\n      telegramUserId: $telegramUserId\n      orderItemList: $orderItemList\n    ) {\n      invoiceUrl\n      orderId\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -4,8 +4,14 @@ import { graphQLClient } from "shared/api/graphQLClient";
 import { serverErrorHandler } from "shared/api/serverErrorHandler";
 
 const createInvoiceUrlMutation = graphql(/* GraphQL */ `
-  mutation CreateInvoiceLink($orderItemList: [OrderItem!]!) {
-    createInvoiceLink(orderItemList: $orderItemList) {
+  mutation CreateInvoiceLink(
+    $telegramUserId: Int!
+    $orderItemList: [OrderItem!]!
+  ) {
+    createInvoiceLink(
+      telegramUserId: $telegramUserId
+      orderItemList: $orderItemList
+    ) {
       invoiceUrl
       orderId
     }
@@ -13,10 +19,12 @@ const createInvoiceUrlMutation = graphql(/* GraphQL */ `
 `);
 
 export const createInvoiceUrl = (
+  telegramUserId: number,
   notEmpryProductCounterList: ProductCounter[]
 ) =>
   graphQLClient
     .request(createInvoiceUrlMutation, {
+      telegramUserId,
       orderItemList: notEmpryProductCounterList.map((productCounter) => ({
         counter: productCounter.counter,
         productId: productCounter.data.id,
