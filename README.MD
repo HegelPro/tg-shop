@@ -5,58 +5,25 @@
 
 ## Что представляет собой приложение?
 
-Приложение служет для того, чтобы на его основе создавать интернет магазины с графическим интерфейсом внутри менеджера Telegram
+Приложение представляет собой шаблон на основе которого можно реализовать Telegram бот для продажи товаров онлайн.
 
-## Сценарий покупки товаров при помощи Telegram бота
-
-![Выбор товаров в магазине](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/select-products.jpg "Выбор товаров в магазине")
-![Проверка списка выбраных товаров](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/check-product-list.jpg "Проверка списка выбраных товаров")
-![Оплата товаров в мессенджере Telegram](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/telegram-pay.jpg "Оплата товаров в мессенджере Telegram")
+Магазин использует удобный графический интерфейс, который встраивается в Telegram бот при помощи Telegram Mini Apps api.
 
 
-## Архитектура приложения
+## Возможности бота
 
-Исходный код распологается в монорепазитории, который содержен несколько приложений:
-* [Клиентское приложения]() - Статическое react приложение работающее внутри Telegram bot реализующее Telegram webapp api. 
-* [Серверное приложения]() - 
+* Отображение списока товаров магазина
+* Открытие подробного описание товаров
+* Добавление товаров в карзину
+* Указание данных для заказа
+* Оплата заказа при помощи Telegram Payments API
 
-## Как запустить приложение?
+## Клиентское приложение
+
+Статическое react приложение работающее внутри Telegram bot реализующее Telegram Mini Apps api.
 
 
-
-Telegram bot where you can buy goods using web app telegram api(GUI).
-
-You can try it by link --> [Telegram store bot](https://t.me/hegeltest_bot)
-
-Board of the project --> [Telegram store project board](https://github.com/users/HegelPro/projects/4)
-
-## Client
-
-### Strong sides
-
-* Typesavety
-  * wrote on Typescript with strict mode
-  * ganarate GraphQL typescript from server GraphQL schema - allow us to synchronice types between client and server
-* Light
-  * without big ui frameworks - Telegram web view store is a small don't need to bright big ui frameworks like `@mui`
-  * without state managers - react context api + react hooks allow us to manage state for small application
-* Modern - all using technologies is popular nowdays
-
-### Structure
-
-```
-- packages\client\
-- | - certs\ - private dir with SSL certs
-- | - prisma\
-- | - | - schema.prisma - schema of prisma
-- | - src\
-- | - | - bot\ -
-- | - | - schema\ -
-- | - | - server.ts - con
-- | - schema.graphql -
-```
-
-### Stack
+### Основные использование технологии
 
 * React
 * Typescript
@@ -65,10 +32,11 @@ Board of the project --> [Telegram store project board](https://github.com/users
 * Pure.css
 * Telegram bot api object(passed with telegram script)
 
+### Ссылка на клиентское приложение
 
-## Server
+[Посмотреть исходники можно по ссылке](https://github.com/HegelPro/tg-store/tree/main/packages/client)
 
-### Strong sides
+## Серверное приложения
 
 * Seciure - works with HTTPS
 * Typesavety
@@ -77,21 +45,7 @@ Board of the project --> [Telegram store project board](https://github.com/users
   * Prisma - allow synchonice types between database and server
 * Modern - all using technologies is popular nowdays
 
-### Structure
-
-```
-- packages\server\
-- | - certs\ - private dir with SSL certs
-- | - prisma\
-- | - | - schema.prisma - schema of prisma
-- | - src\
-- | - | - bot\ -
-- | - | - schema\ -
-- | - | - server.ts - con
-- | - schema.graphql -
-```
-
-### Stack
+### Основные использование технологии
 
 * Node.js
 * Typescript
@@ -100,6 +54,43 @@ Board of the project --> [Telegram store project board](https://github.com/users
 * fastify
 * Telegram bot api(`grammy`)
 
-## Entirament
+### Ссылка на серверное приложение
 
-Project has monorepository structure
+[Посмотреть исходники можно по ссылке](https://github.com/HegelPro/tg-store/tree/main/packages/server)
+
+## Как запустить приложение?
+
+1. Создать в корне репазитория файл с название `.env.production` и заполнить его необходимыми переменными. Пример файла:
+```
+DATABASE_URL=""
+POSTGRES_USER=""
+POSTGRES_PASSWORD=""
+
+GRAPHQL_ENDPOINT="/graphql"
+
+TG_BOT_API_TOKEN=""
+
+PROVIDER_TOKEN=""
+
+SERVER_PORT="443"
+
+CERTIFICATE_KEY_PATH='./certs/certificate.key'
+CERTIFICATE_CERT_PATH='./certs/certificate.crt'
+
+VITE_GRAPHQL_ENDPOINT=""
+```
+2. Добавить файл с SSL сертефекатом по пути `/packages/server/certs/certificate.crt` и файл с SSL ключем `/packages/server/certs/certificate.key`
+3. Запустить следующую команду в корне монорепазитория:
+```bash
+docker-compose up -d --build -f /docker-compose-production.yml
+```
+
+## Доска задач
+
+[Telegram store project board](https://github.com/users/HegelPro/projects/4)
+
+## Скриншоты с демонстрацией работы магазина в Telegram
+
+![Выбор товаров в магазине](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/select-products.jpg "Выбор товаров в магазине")
+![Проверка списка выбраных товаров](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/check-product-list.jpg "Проверка списка выбраных товаров")
+![Оплата товаров в мессенджере Telegram](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/telegram-pay.jpg "Оплата товаров в мессенджере Telegram")
