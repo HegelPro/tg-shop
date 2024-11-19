@@ -20,8 +20,23 @@
 
 ## Клиентское приложение
 
-Статическое react приложение работающее внутри Telegram bot реализующее Telegram Mini Apps api.
+Статическое react приложение работающее внутри Telegram bot внутри себя использующее Telegram Mini Apps api.
 
+### Сильные стороны выбраных програмных решений
+
+* Архитектурное решение feature slice design
+  * Ясная бизнес логика
+  * Адаптивность, благодаря которой можно гибко заменять и добавлять компонента в соответствии с новыми требованиями
+  * Легкий рефакторинг, каждый модуль может быть легко заменен и переписан без сайд эффектов
+  * Ясная переиспользуемость кода
+* Полностью typesafety 
+  * Приложение написано при помощи strict mode Typescript
+  * Все внешнее api типизиравоно при помощи GraphQL схемы и проверок типов io-ts
+* Выбор популярного и проверенного стека технологий
+  * React - дикларотивный и отлично типизируемый frontend framework
+  * GraphQL - гибкий язык запросов, предоставляющий возможность типизировать api
+  * Mui - предаставляет все необходимые базовые UI решения для frontend приложений
+  * Vite - удобный и самый быстрый в режиме разработки сборщик статических приложений
 
 ### Основные использование технологии
 
@@ -29,8 +44,8 @@
 * Typescript
 * GraphQL(`@graphql-codegen` + `graphql-request`)
 * Vite
-* Pure.css
-* Telegram bot api object(passed with telegram script)
+* Material UI
+* Telegram webapp api object
 
 ### Ссылка на клиентское приложение
 
@@ -38,12 +53,12 @@
 
 ## Серверное приложения
 
-* Seciure - works with HTTPS
-* Typesavety
-  * wrote on Typescript with strict mode
-  * generating GraphQL schema with typesafty library - allow us to synchronice types between server and client
-  * Prisma - allow synchonice types between database and server
-* Modern - all using technologies is popular nowdays
+* Полностью typesafety
+  * Приложение написано при помощи strict mode Typescript
+  * Сохранение типизации между базой данных и серверным приложением
+  * Сохраниние типизации между серверным приложением и генерируемой GraphQL схемой
+* Выбор популярного и проверенного стека технологий
+* Настройка секьюрного HTTPS протакола
 
 ### Основные использование технологии
 
@@ -51,8 +66,9 @@
 * Typescript
 * GraphQL(`@pothos` + `graphql-yoga`)
 * Prisma
-* fastify
+* Fastify
 * Telegram bot api(`grammy`)
+* Docker
 
 ### Ссылка на серверное приложение
 
@@ -85,11 +101,11 @@ VITE_GRAPHQL_ENDPOINT=""
 docker-compose up -d --build -f /docker-compose-production.yml
 ```
 
-## Доска задач
+## Доска задач для проекта
 
 [Telegram store project board](https://github.com/users/HegelPro/projects/4)
 
-## Скриншоты с демонстрацией работы магазина в Telegram
+## Скриншоты с демонстрацией работы Telegram bot приложения
 
 ![Выбор товаров в магазине](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/select-products.jpg "Выбор товаров в магазине")
 ![Проверка списка выбраных товаров](https://raw.githubusercontent.com/HegelPro/tg-store/refs/heads/main/images/check-product-list.jpg "Проверка списка выбраных товаров")
